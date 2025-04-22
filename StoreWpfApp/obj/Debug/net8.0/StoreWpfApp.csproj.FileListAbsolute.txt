@@ -1,0 +1,14 @@
+C:\Users\David\RiderProjects\StoreWpfApp\StoreWpfApp\bin\Debug\net8.0\StoreWpfApp.exe
+C:\Users\David\RiderProjects\StoreWpfApp\StoreWpfApp\bin\Debug\net8.0\StoreWpfApp.deps.json
+C:\Users\David\RiderProjects\StoreWpfApp\StoreWpfApp\bin\Debug\net8.0\StoreWpfApp.runtimeconfig.json
+C:\Users\David\RiderProjects\StoreWpfApp\StoreWpfApp\bin\Debug\net8.0\StoreWpfApp.dll
+C:\Users\David\RiderProjects\StoreWpfApp\StoreWpfApp\bin\Debug\net8.0\StoreWpfApp.pdb
+C:\Users\David\RiderProjects\StoreWpfApp\StoreWpfApp\obj\Debug\net8.0\StoreWpfApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\David\RiderProjects\StoreWpfApp\StoreWpfApp\obj\Debug\net8.0\StoreWpfApp.AssemblyInfoInputs.cache
+C:\Users\David\RiderProjects\StoreWpfApp\StoreWpfApp\obj\Debug\net8.0\StoreWpfApp.AssemblyInfo.cs
+C:\Users\David\RiderProjects\StoreWpfApp\StoreWpfApp\obj\Debug\net8.0\StoreWpfApp.csproj.CoreCompileInputs.cache
+C:\Users\David\RiderProjects\StoreWpfApp\StoreWpfApp\obj\Debug\net8.0\StoreWpfApp.dll
+C:\Users\David\RiderProjects\StoreWpfApp\StoreWpfApp\obj\Debug\net8.0\refint\StoreWpfApp.dll
+C:\Users\David\RiderProjects\StoreWpfApp\StoreWpfApp\obj\Debug\net8.0\StoreWpfApp.pdb
+C:\Users\David\RiderProjects\StoreWpfApp\StoreWpfApp\obj\Debug\net8.0\StoreWpfApp.genruntimeconfig.cache
+C:\Users\David\RiderProjects\StoreWpfApp\StoreWpfApp\obj\Debug\net8.0\ref\StoreWpfApp.dll
