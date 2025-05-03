@@ -8,7 +8,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Repository\" />
+      <ProjectReference Include="..\Core\Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Dapper" Version="2.1.66" />
+      <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.0-preview.3.25171.5" />
     </ItemGroup>
 
 </Project>
