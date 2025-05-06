@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DekstopApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+63fba01182d3d9d539002dff2f6ed983f6d7d681")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+41de2668bf8b38b5180786519da63ec9b6c232e0")]
 [assembly: System.Reflection.AssemblyProductAttribute("DekstopApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DekstopApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
