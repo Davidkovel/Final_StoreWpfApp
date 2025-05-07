@@ -12,5 +12,13 @@ public partial class HomePage : UserControl
         InitializeComponent();
         DataContext = viewModel;
         _navigationService = navigationService;
+        
+        // Вызов команды загрузки продуктов
+        if (viewModel.LoadProductsCommand.CanExecute(null))
+            viewModel.LoadProductsCommand.Execute(null);
+        
+        // Вызов команды загрузки категорий
+        if (viewModel.LoadCategoryCommand.CanExecute(null))
+            viewModel.LoadCategoryCommand.Execute(null);
     }
 }

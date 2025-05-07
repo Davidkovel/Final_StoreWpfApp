@@ -4,37 +4,156 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             MinHeight="450" MinWidth="800"
-             Background="#222265">
-    <Grid>
-        
+             MinHeight="600" MinWidth="1000">
+
+    <Grid Background="#F5F5F5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />  <!-- First Header (About/Products) -->
+            <RowDefinition Height="Auto" />  <!-- Second Header (Black - Product List View) -->
+            <RowDefinition Height="*" />     <!-- Main Content -->
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
-            <Button Content="Load Products" 
-                    Command="{Binding LoadProductsCommand}"
-                    Padding="10 5"
-                    MinWidth="120"/>
-        </StackPanel>
+        <!-- First Header (Yellow) -->
+        <Border Grid.Row="0" Background="#FFD700" Padding="15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />  <!-- Logo -->
+                    <ColumnDefinition Width="*" />     <!-- Navigation -->
+                    <ColumnDefinition Width="Auto" />  <!-- User Actions -->
+                </Grid.ColumnDefinitions>
 
-        <DataGrid Grid.Row="1" 
-                 ItemsSource="{Binding Products}"
-                 AutoGenerateColumns="False"
-                 IsReadOnly="True"
-                 Margin="10"
-                 Background="Transparent"
-                 Foreground="Black"
-                 
-                 >
-            <DataGrid.Columns>
-                
-                <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
-                <DataGridTextColumn Header="Price" Binding="{Binding Price, StringFormat=C}"/>
-                <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}"/>
-            </DataGrid.Columns>
-        </DataGrid>
+                <!-- Logo -->
+                <TextBlock Grid.Column="0"
+                           Text="MyShop"
+                           Foreground="Black"
+                           FontSize="20"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center" />
+
+                <!-- Navigation -->
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center">
+                    <Button Content="Товары"
+                            Margin="10 0"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="Black"
+                            FontWeight="Bold" />
+                    <Button Content="О нас"
+                            Margin="10 0"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="Black"
+                            FontWeight="Bold" />
+                </StackPanel>
+
+                <!-- User Actions -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Button Content="Войти"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="Black"
+                            FontWeight="Bold" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Second Header (Black - Product List View) -->
+        <Border Grid.Row="1" Background="Black" Padding="15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Categories list view -->
+                <!-- Каталог слева -->
+                <Menu Grid.Column="0" VerticalAlignment="Center">
+                    <MenuItem Header="Каталог"
+                              Foreground="#FFD700"
+                              FontWeight="Bold">
+                        <!-- Все товары -->
+                        <MenuItem Header="Все товары"
+                                  Command="{Binding LoadCategoryCommand}"
+                                  Foreground="#FFD700" />
+
+                        <!-- Разделитель -->
+                        <Separator />
+
+                        <!-- Категории -->
+                        <ItemsControl ItemsSource="{Binding Categories}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <MenuItem Header="{Binding Name}"
+                                              Command="{Binding DataContext.LoadCategoryCommand, 
+                                      RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                              CommandParameter="{Binding Id}"
+                                              Foreground="#FFD700" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </MenuItem>
+                </Menu>
+
+
+                <!-- TextBlock по центру -->
+                <TextBlock
+                    Grid.Column="1"
+                    Text="PRODUCT LIST VIEW"
+                    Foreground="#FFD700"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+
+
+        <!-- Main Content -->
+        <ScrollViewer Grid.Row="2" Padding="20">
+            <StackPanel>
+                <!-- Products Grid -->
+                <ItemsControl ItemsSource="{Binding Products}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Width="200"
+                                    Height="280"
+                                    Background="White"
+                                    Margin="10"
+                                    CornerRadius="5"
+                                    BorderBrush="#DDD"
+                                    BorderThickness="1">
+                                <StackPanel>
+                                    <!-- Product Image -->
+                                    <Border Height="120" Background="#EEE">
+                                        <Image Source="{Binding ImageUrl}" Stretch="Uniform" />
+                                    </Border>
+
+                                    <!-- Product Info -->
+                                    <StackPanel Margin="10">
+                                        <TextBlock Text="{Binding Name}"
+                                                   FontWeight="Bold"
+                                                   TextWrapping="Wrap" />
+                                        <TextBlock Text="{Binding Price, StringFormat='{}{0:C}'}"
+                                                   Foreground="#222265"
+                                                   Margin="0 5 0 0" />
+                                    </StackPanel>
+
+                                    <!-- Add to Cart Button -->
+                                    <Button Content="В корзину"
+                                            Margin="10"
+                                            Background="Black"
+                                            Foreground="#FFD700" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>
