@@ -80,6 +80,16 @@ public class DbCommands
                 p.Name;
         ";
 
+    public static string GetCategories() => @"
+        SELECT
+            c.Id,
+            c.Name,
+            c.Description
+        FROM Categories c
+        ORDER BY 
+            c.Name;
+        ";
+
     // public static string InitializeDatabaseScript() =>
     //     CreateDbCommandWithNotExists("Shop") +
     //     UseDbCommand("Shop") +

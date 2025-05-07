@@ -8,13 +8,13 @@ namespace DekstopApp.Services;
 public class ProductService(ProductRepository productRepository) : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
-    
+
     public async void AddProduct(Product product)
     {
         await productRepository.AddProductAsync(product);
         OnPropertyChanged();
     }
-    
+
     public async Task<IEnumerable<Product>> LoadProducts()
     {
         // var testProduct = new Product(
@@ -27,11 +27,10 @@ public class ProductService(ProductRepository productRepository) : INotifyProper
         // );
         // await productRepository.AddProductAsync(testProduct);
         var products = await productRepository.GetProductsAsync();
-        Console.WriteLine(products);
         return products;
     }
-    
-    
+
+
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

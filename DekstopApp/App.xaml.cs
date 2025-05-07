@@ -46,16 +46,18 @@ public partial class App : Application
 
         // Repositories
         serviceLocator.AddSingleton<ProductRepository, ProductRepositoryImpl>();
+        serviceLocator.AddSingleton<CategoryRepository, CategoryRepositoryImpl>();
 
         // Register Services / Use Cases
         serviceLocator.AddSingleton<NavigationService>();
         serviceLocator.AddSingleton<ProductService>();
-
+        serviceLocator.AddSingleton<CategoryService>();
 
         // Register ViewModels
         serviceLocator.AddSingleton<HomeViewModel>(sp => new HomeViewModel(
             logger: sp.GetRequiredService<ILogger<HomeViewModel>>(),
             productService: sp.GetRequiredService<ProductService>(),
+            categoryService: sp.GetRequiredService<CategoryService>(),
             navigationService: sp.GetRequiredService<NavigationService>()
         ));
 
