@@ -147,7 +147,8 @@
                                     <Button Content="В корзину"
                                             Margin="10"
                                             Background="Black"
-                                            Foreground="#FFD700" />
+                                            Command="{Binding DataContext.ViewProductDetailCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                            CommandParameter="{Binding}" />
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
