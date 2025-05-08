@@ -60,11 +60,20 @@ public partial class App : Application
             categoryService: sp.GetRequiredService<CategoryService>(),
             navigationService: sp.GetRequiredService<NavigationService>()
         ));
+        
+        serviceLocator.AddSingleton<DetailViewModel>(sp => new DetailViewModel(
+            navigationService: sp.GetRequiredService<NavigationService>()
+        ));
 
         // Register Views
         serviceLocator.AddSingleton<HomePage>(sp => new HomePage(
             navigationService: sp.GetRequiredService<NavigationService>(),
             viewModel: sp.GetRequiredService<HomeViewModel>()
+        ));
+        
+        serviceLocator.AddSingleton<DetailViewPage>(sp => new DetailViewPage(
+            navigationService: sp.GetRequiredService<NavigationService>(),
+            viewModel: sp.GetRequiredService<DetailViewModel>()
         ));
 
         // Register MainWindow
