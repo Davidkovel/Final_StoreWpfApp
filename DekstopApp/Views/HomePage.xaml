@@ -65,31 +65,33 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Categories list view -->
-                <!-- Каталог слева -->
                 <Menu Grid.Column="0" VerticalAlignment="Center">
                     <MenuItem Header="Каталог"
                               Foreground="#FFD700"
                               FontWeight="Bold">
                         <!-- Все товары -->
                         <MenuItem Header="Все товары"
-                                  Command="{Binding LoadCategoryCommand}"
+                                  Command="{Binding FilterByCategoryCommand}"
+                                  CommandParameter="{x:Null}"
                                   Foreground="#FFD700" />
 
-                        <!-- Разделитель -->
                         <Separator />
 
-                        <!-- Категории -->
-                        <ItemsControl ItemsSource="{Binding Categories}">
-                            <ItemsControl.ItemTemplate>
+                        <MenuItem Header="Категории"
+                                  Foreground="#FFD700">
+                            <MenuItem.ItemsSource>
+                                <Binding Path="Categories"/>
+                            </MenuItem.ItemsSource>
+                            <MenuItem.ItemTemplate>
                                 <DataTemplate>
                                     <MenuItem Header="{Binding Name}"
-                                              Command="{Binding DataContext.LoadCategoryCommand, 
-                                      RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                              Command="{Binding DataContext.FilterByCategoryCommand, 
+                                              RelativeSource={RelativeSource AncestorType=Menu}}"
                                               CommandParameter="{Binding Id}"
-                                              Foreground="#FFD700" />
+                                              Foreground="#FFD700"/>
                                 </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                            </MenuItem.ItemTemplate>
+                        </MenuItem>
                     </MenuItem>
                 </Menu>
 

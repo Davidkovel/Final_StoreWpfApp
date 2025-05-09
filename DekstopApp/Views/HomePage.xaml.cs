@@ -17,22 +17,15 @@ public partial class HomePage : UserControl
         DataContext = viewModel;
         _navigationService = navigationService;
 
-        // Вызов команды загрузки продуктов
         if (viewModel.LoadProductsCommand.CanExecute(null))
             viewModel.LoadProductsCommand.Execute(null);
 
-        // Вызов команды загрузки категорий
         if (viewModel.LoadCategoryCommand.CanExecute(null))
             viewModel.LoadCategoryCommand.Execute(null);
     }
 
-    private void ViewProductDetailNavigationClick(Product product)
-    {
-        _navigationService.NavigateTo<DetailViewPage, DetailViewModel>(vm => vm.SelectedProduct = product);
-    }
-
-    // private void OnSignInNavigationClick(object sender, RoutedEventArgs e)
+    // private void ViewProductDetailNavigationClick(Product product)
     // {
-    //     _navigationService.NavigateTo<SignInPage, SignInViewModel>();
+    //     _navigationService.NavigateTo<DetailViewPage, DetailViewModel>(vm => vm.SelectedProduct = product);
     // }
 }

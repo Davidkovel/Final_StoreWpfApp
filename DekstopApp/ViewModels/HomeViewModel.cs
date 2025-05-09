@@ -80,23 +80,23 @@ namespace DekstopApp.ViewModels;
 //     }
 // }
 
-
 public partial class HomeViewModel : ObservableObject
 {
-    [ObservableProperty]
-    private ObservableCollection<Product> _products = new();
-    
-    [ObservableProperty]
-    private ObservableCollection<Category> _categories = new();
-    
+    [ObservableProperty] private ObservableCollection<Product> _products = new();
+
+    [ObservableProperty] private ObservableCollection<Category> _categories = new();
+
     private readonly ILogger<HomeViewModel> _logger;
     private readonly ProductService _productService;
     private readonly CategoryService _categoryService;
     private readonly NavigationService _navigationService;
 
+    [ObservableProperty] 
+    private int? _selectedCategoryId;
+
     public HomeViewModel(
-        ILogger<HomeViewModel> logger, 
-        ProductService productService, 
+        ILogger<HomeViewModel> logger,
+        ProductService productService,
         CategoryService categoryService,
         NavigationService navigationService)
     {
@@ -104,7 +104,7 @@ public partial class HomeViewModel : ObservableObject
         _productService = productService;
         _categoryService = categoryService;
         _navigationService = navigationService;
-        
+
         LoadProductsCommand = new AsyncRelayCommand(LoadProducts);
         LoadCategoryCommand = new AsyncRelayCommand(LoadCategories);
     }
@@ -117,8 +117,17 @@ public partial class HomeViewModel : ObservableObject
     {
         try
         {
-            _logger.LogInformation("Loading product to main homepage.xaml...");
-            var loadedProducts = await _productService.LoadProducts();
+            _logger.LogInformation("Loading product...");
+            IEnumerable<Product> loadedProducts;
+
+            if (SelectedCategoryId.HasValue)
+            {
+                loadedProducts = await _productService.GetProductsByCategory(SelectedCategoryId.Value);
+            }
+            else
+            {
+                loadedProducts = await _productService.LoadProducts();
+            }
 
             Products.Clear();
             foreach (var product in loadedProducts)
@@ -136,10 +145,10 @@ public partial class HomeViewModel : ObservableObject
     {
         try
         {
-            _logger.LogInformation("Loading categories to homepage.xaml...");
+            _logger.LogInformation("Loading categories...");
             var loadedCategories = await _categoryService.GetCategories();
-            Console.WriteLine($"Loaded {loadedCategories.Count()} categories"); 
-            Categories.Clear(); 
+
+            Categories.Clear();
             foreach (var category in loadedCategories)
             {
                 Categories.Add(category);
@@ -157,5 +166,12 @@ public partial class HomeViewModel : ObservableObject
         {
             _navigationService.NavigateTo<DetailViewPage, DetailViewModel>(vm => vm.SelectedProduct = product);
         }
+    }
+
+    [RelayCommand]
+    private async Task FilterByCategory(int? categoryId)
+    {
+        SelectedCategoryId = categoryId;
+        await LoadProducts();
     }
 }
