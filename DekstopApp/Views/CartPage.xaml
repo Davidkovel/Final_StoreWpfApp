@@ -1,0 +1,99 @@
+<UserControl x:Class="DekstopApp.Views.CartPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:DekstopApp.Views"
+             mc:Ignorable="d"
+             d:DesignHeight="400" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />  <!-- First Header (Naviagation items) -->
+            <RowDefinition Height="Auto" />  <!-- Second Header (Your items / your cart) -->
+            <RowDefinition Height="*" />     <!-- Main Content -->
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#FFD700" Padding="15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />  <!-- Logo -->
+                    <ColumnDefinition Width="*" />     <!-- Navigation -->
+                    <ColumnDefinition Width="Auto" />  <!-- User Actions -->
+                </Grid.ColumnDefinitions>
+
+                <!-- Logo -->
+                <TextBlock Grid.Column="0"
+                           Text="MyShop"
+                           Foreground="Black"
+                           FontSize="20"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center" />
+
+                <!-- Navigation -->
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center">
+                    <Button Content="Товары"
+                            Margin="10 0"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="Black"
+                            FontWeight="Bold" />
+                    <Button Content="О нас"
+                            Margin="10 0"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="Black"
+                            FontWeight="Bold" />
+                </StackPanel>
+
+                <!-- User Actions -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Button Content="Войти"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="Black"
+                            FontWeight="Bold" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+
+        <!-- Second Header (Your items / your cart) -->
+        <Border Grid.Row="1" Background="White" Padding="15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- TextBlock по центру -->
+                <TextBlock
+                    Grid.Column="1"
+                    Text="Your Cart"
+                    Foreground="Black"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+
+        <!-- Main Content -->
+        <ScrollViewer Grid.Row="2" Padding="20">
+            <StackPanel>
+                <!-- Product List -->
+                <ItemsControl ItemsSource="{Binding CartItems}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="10">
+                                <Image Source="{Binding ImageUrl}" Width="100" Height="100" />
+                                <StackPanel Margin="10">
+                                    <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold" />
+                                    <TextBlock Text="{Binding Price}" FontSize="14" Foreground="#222265" />
+                                    <TextBlock Text="{Binding Quantity}" FontSize="14" />
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
