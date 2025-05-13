@@ -30,6 +30,12 @@ public class ProductService(ProductRepository productRepository) : INotifyProper
         return products;
     }
 
+    public async Task<IEnumerable<Product>> GetProductsByCategory(int categoryId)
+    {
+        var products = await productRepository.GetProductsByCategoryIdAsync(categoryId);
+        return products;
+    }
+
 
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
