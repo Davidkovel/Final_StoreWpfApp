@@ -12,3 +12,4 @@ C:\Users\David\RiderProjects\StoreWpfApp\StoreWpfApp\obj\Debug\net8.0\refint\Sto
 C:\Users\David\RiderProjects\StoreWpfApp\StoreWpfApp\obj\Debug\net8.0\StoreWpfApp.pdb
 C:\Users\David\RiderProjects\StoreWpfApp\StoreWpfApp\obj\Debug\net8.0\StoreWpfApp.genruntimeconfig.cache
 C:\Users\David\RiderProjects\StoreWpfApp\StoreWpfApp\obj\Debug\net8.0\ref\StoreWpfApp.dll
+C:\Users\David\RiderProjects\StoreWpfApp\StoreWpfApp\obj\Debug\net8.0\StoreWpfApp.sourcelink.json

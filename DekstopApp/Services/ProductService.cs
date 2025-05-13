@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Core.Entity;
 using Core.Repository;
 
@@ -27,6 +29,12 @@ public class ProductService(ProductRepository productRepository) : INotifyProper
         // );
         // await productRepository.AddProductAsync(testProduct);
         var products = await productRepository.GetProductsAsync();
+        return products;
+    }
+
+    public async Task<IEnumerable<Product>> GetProductsByCategory(int categoryId)
+    {
+        var products = await productRepository.GetProductsByCategoryIdAsync(categoryId);
         return products;
     }
 

@@ -1,4 +1,6 @@
+using System;
 using System.Data;
+using System.Threading.Tasks;
 using Dapper;
 using Data.DBCommands;
 using Microsoft.Data.SqlClient;
@@ -15,7 +17,6 @@ public interface IDatabaseProvider
 public class SqlServerDatabaseProvider : IDatabaseProvider
 {
     private readonly string _connectionString;
-
     public SqlServerDatabaseProvider(string connectionString)
     {
         _connectionString = connectionString;
@@ -25,20 +26,18 @@ public class SqlServerDatabaseProvider : IDatabaseProvider
     {
         try
         {
-            // @Todo: Разобрать с ошибкой  Database initialization failed: Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'startIndex')
-
             await using var connection = new SqlConnection(_connectionString);
             await connection.OpenAsync();
 
             // Создаем БД если не существует
-            await ExecuteNonQueryAsync(connection, DbCommands.CreateDbCommandWithNotExists("Shop"));
+            await ExecuteNonQueryAsync(connection, DatabaseCommandProvider.CreateDbCommandWithNotExists("Shop"));
 
             // Используем нашу БД
             // await ExecuteNonQueryAsync(connection, DbCommands.UseDbCommand("Shop"));
 
             // Создаем таблицы
-            await ExecuteNonQueryAsync(connection, DbCommands.CreateCategoriesTableIfNotExists());
-            await ExecuteNonQueryAsync(connection, DbCommands.CreateTablesCommandIfNotExist());
+            await ExecuteNonQueryAsync(connection, DatabaseCommandProvider.CreateCategoriesTableIfNotExists());
+            await ExecuteNonQueryAsync(connection, DatabaseCommandProvider.CreateTablesCommandIfNotExist());
             
         }
         catch (Exception ex)
@@ -56,7 +55,7 @@ public class SqlServerDatabaseProvider : IDatabaseProvider
             await connection.OpenAsync();
 
             // Удаляем таблицы
-            await ExecuteNonQueryAsync(connection, DbCommands.DropTablesCommand());
+            await ExecuteNonQueryAsync(connection, DatabaseCommandProvider.DropTablesCommand());
 
             // Создаем заново
             await InitializeDatabaseAsync();

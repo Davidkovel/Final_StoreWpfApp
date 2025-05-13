@@ -1,7 +1,10 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Data;
 using System.Windows;
 using Core.Repository;
+using Data.Abstractions.Database;
+using Data.DBCommands;
 using Data.DBProvider;
 using Data.Repository;
 using DekstopApp.Services;
@@ -44,6 +47,10 @@ public partial class App : Application
         serviceLocator.AddSingleton<IDatabaseProvider>(_ =>
             new SqlServerDatabaseProvider(connectionString));
 
+        // Command Providers
+        serviceLocator.AddSingleton<IProductSqlCommandProvider, ProductCommandProvider>();
+        serviceLocator.AddSingleton<ICategorySqlCommandProvider, CategoryCommandProvider>();
+
         // Repositories
         serviceLocator.AddSingleton<ProductRepository, ProductRepositoryImpl>();
         serviceLocator.AddSingleton<CategoryRepository, CategoryRepositoryImpl>();
@@ -60,7 +67,7 @@ public partial class App : Application
             categoryService: sp.GetRequiredService<CategoryService>(),
             navigationService: sp.GetRequiredService<NavigationService>()
         ));
-        
+
         serviceLocator.AddSingleton<DetailViewModel>(sp => new DetailViewModel(
             navigationService: sp.GetRequiredService<NavigationService>()
         ));
@@ -70,7 +77,7 @@ public partial class App : Application
             navigationService: sp.GetRequiredService<NavigationService>(),
             viewModel: sp.GetRequiredService<HomeViewModel>()
         ));
-        
+
         serviceLocator.AddSingleton<DetailViewPage>(sp => new DetailViewPage(
             navigationService: sp.GetRequiredService<NavigationService>(),
             viewModel: sp.GetRequiredService<DetailViewModel>()

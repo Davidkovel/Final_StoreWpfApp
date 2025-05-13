@@ -1,4 +1,6 @@
-﻿namespace Core;
+﻿using System;
+
+namespace Core;
 
 class Program
 {
