@@ -1,4 +1,6 @@
-﻿namespace Data;
+﻿using System;
+
+namespace Data;
 
 class Program
 {
