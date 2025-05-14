@@ -17,6 +17,7 @@ public interface IDatabaseProvider
 public class SqlServerDatabaseProvider : IDatabaseProvider
 {
     private readonly string _connectionString;
+
     public SqlServerDatabaseProvider(string connectionString)
     {
         _connectionString = connectionString;
@@ -38,7 +39,7 @@ public class SqlServerDatabaseProvider : IDatabaseProvider
             // Создаем таблицы
             await ExecuteNonQueryAsync(connection, DatabaseCommandProvider.CreateCategoriesTableIfNotExists());
             await ExecuteNonQueryAsync(connection, DatabaseCommandProvider.CreateTablesCommandIfNotExist());
-            
+            await ExecuteNonQueryAsync(connection, DatabaseCommandProvider.CreateCartTableIfNotExists());
         }
         catch (Exception ex)
         {

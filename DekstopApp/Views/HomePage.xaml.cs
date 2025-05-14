@@ -28,4 +28,8 @@ public partial class HomePage : UserControl
     // {
     //     _navigationService.NavigateTo<DetailViewPage, DetailViewModel>(vm => vm.SelectedProduct = product);
     // }
+    private void OnGoCartPageNavigationClick(object sender, RoutedEventArgs e)
+    {
+        _navigationService.NavigateTo<CartPage, CartViewModel>();
+    }
 }

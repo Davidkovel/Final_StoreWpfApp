@@ -3,9 +3,12 @@ namespace Core.Entity;
 public class Cart
 {
     public int Id { get; set; }
-    // public int UserId { get; set; } Temporarily withoud Auth
-    public List<Product> Products { get; set; } = new List<Product>();
+
+    // public int UserId { get; set; } Temporarily without Auth
+    public int ProductId { get; set; }
+    public int Quantity { get; set; }
     
-    
-    public decimal TotalPrice => Products.Sum(p => p.Price * p.Quantity);
+    public string ProductName { get; set; }
+    public decimal ProductPrice { get; set; }
+    public string ProductImageUrl { get; set; } // later for amazon s3
 }
