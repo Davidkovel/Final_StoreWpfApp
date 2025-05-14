@@ -72,7 +72,8 @@ public partial class App : Application
         ));
 
         serviceLocator.AddSingleton<DetailViewModel>(sp => new DetailViewModel(
-            navigationService: sp.GetRequiredService<NavigationService>()
+            navigationService: sp.GetRequiredService<NavigationService>(),
+            cartService: sp.GetRequiredService<CartService>()
         ));
 
         serviceLocator.AddSingleton<CartViewModel>(sp => new CartViewModel(

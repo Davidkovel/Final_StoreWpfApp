@@ -18,4 +18,15 @@ public class CartCommandProvider : ICartSqlCommandProvider
         INNER JOIN Products p ON c.ProductId = p.Id
         ORDER BY 
             c.ProductId;";
+    
+    public string AddItemToCart() => @"
+        INSERT INTO Cart (ProductId, Quantity)
+        VALUES (@ProductId, @Quantity);";
+    
+    public string DeleteItemFromCart() => @"
+        DELETE FROM Cart
+        WHERE ProductId = @ProductId;";
+    
+    public string ClearCart() => @"
+        DELETE FROM Cart;";
 }

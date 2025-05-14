@@ -1,6 +1,9 @@
+using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Core.Entity;
+using DekstopApp.Common;
 using DekstopApp.Services;
 
 namespace DekstopApp.ViewModels;
@@ -11,9 +14,23 @@ public partial class DetailViewModel : ObservableObject
 
     [ObservableProperty] private Product? _selectedProduct;
 
-    public DetailViewModel(NavigationService navigationService)
+    private readonly CartService _cartService;
+
+    public DetailViewModel(NavigationService navigationService, CartService cartService)
     {
         _navigationService = navigationService;
+        _cartService = cartService;
+    }
+
+    [RelayCommand]
+    private void AddToCart()
+    {
+        if (_selectedProduct == null) return;
+
+        _cartService.AddItemToCart(_selectedProduct, 1);
+
+        Console.WriteLine("Product added to cart: " + _selectedProduct.Name);
+        WeakReferenceMessenger.Default.Send(new CartUpdatedMessage());
     }
 
     [RelayCommand]
