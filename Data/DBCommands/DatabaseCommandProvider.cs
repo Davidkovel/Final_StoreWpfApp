@@ -50,6 +50,16 @@ public class DatabaseCommandProvider
             END
         ";
 
+    public static string CreateCartTableIfNotExists() => @"
+            IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Cart')
+            BEGIN
+                CREATE TABLE Cart (
+                    Id INT PRIMARY KEY IDENTITY(1,1),
+                    ProductId INT NOT NULL,
+                    Quantity INT NOT NULL DEFAULT 1,
+                    CONSTRAINT FK_Cart_Products FOREIGN KEY (ProductId) REFERENCES Products(Id)
+        ";
+
     public static string DropTablesCommand() => @"
             IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Products')
             BEGIN

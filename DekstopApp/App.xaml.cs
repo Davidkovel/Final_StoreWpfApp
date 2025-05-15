@@ -50,15 +50,18 @@ public partial class App : Application
         // Command Providers
         serviceLocator.AddSingleton<IProductSqlCommandProvider, ProductCommandProvider>();
         serviceLocator.AddSingleton<ICategorySqlCommandProvider, CategoryCommandProvider>();
+        serviceLocator.AddSingleton<ICartSqlCommandProvider, CartCommandProvider>();
 
         // Repositories
         serviceLocator.AddSingleton<ProductRepository, ProductRepositoryImpl>();
         serviceLocator.AddSingleton<CategoryRepository, CategoryRepositoryImpl>();
+        serviceLocator.AddSingleton<CartRepository, CartRepositoryImpl>();
 
         // Register Services / Use Cases
         serviceLocator.AddSingleton<NavigationService>();
         serviceLocator.AddSingleton<ProductService>();
         serviceLocator.AddSingleton<CategoryService>();
+        serviceLocator.AddSingleton<CartService>();
 
         // Register ViewModels
         serviceLocator.AddSingleton<HomeViewModel>(sp => new HomeViewModel(
@@ -69,7 +72,14 @@ public partial class App : Application
         ));
 
         serviceLocator.AddSingleton<DetailViewModel>(sp => new DetailViewModel(
-            navigationService: sp.GetRequiredService<NavigationService>()
+            navigationService: sp.GetRequiredService<NavigationService>(),
+            cartService: sp.GetRequiredService<CartService>()
+        ));
+
+        serviceLocator.AddSingleton<CartViewModel>(sp => new CartViewModel(
+            logger: sp.GetRequiredService<ILogger<CartViewModel>>(),
+            navigationService: sp.GetRequiredService<NavigationService>(),
+            cartService: sp.GetRequiredService<CartService>()
         ));
 
         // Register Views
@@ -81,6 +91,11 @@ public partial class App : Application
         serviceLocator.AddSingleton<DetailViewPage>(sp => new DetailViewPage(
             navigationService: sp.GetRequiredService<NavigationService>(),
             viewModel: sp.GetRequiredService<DetailViewModel>()
+        ));
+
+        serviceLocator.AddSingleton<CartPage>(sp => new CartPage(
+            navigationService: sp.GetRequiredService<NavigationService>(),
+            viewModel: sp.GetRequiredService<CartViewModel>()
         ));
 
         // Register MainWindow

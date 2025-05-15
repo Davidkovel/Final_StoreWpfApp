@@ -39,6 +39,12 @@
                             Style="{StaticResource MaterialDesignFlatButton}"
                             Foreground="Black"
                             FontWeight="Bold" />
+                    <Button Content="Корзина"
+                            Margin="10 0"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="Black"
+                            FontWeight="Bold"
+                            Click="OnGoCartPageNavigationClick"/>
                     <Button Content="О нас"
                             Margin="10 0"
                             Style="{StaticResource MaterialDesignFlatButton}"
