@@ -29,4 +29,15 @@ public class CartCommandProvider : ICartSqlCommandProvider
     
     public string ClearCart() => @"
         DELETE FROM Cart;";
+    
+    // public string IncrementItemQuantity() => @"
+    //     UPDATE Cart
+    //     SET Quantity = Quantity + 1
+    //     WHERE ProductId = @ProductId;";
+    //
+    // public string DecrementItemQuantity() => @"
+    //     UPDATE Cart
+    //     SET Quantity = Quantity - 1
+    //     WHERE ProductId = @ProductId;";
+    //
 }

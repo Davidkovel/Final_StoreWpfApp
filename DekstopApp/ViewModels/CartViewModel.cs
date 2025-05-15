@@ -15,11 +15,17 @@ namespace DekstopApp.ViewModels;
 
 public partial class CartViewModel : ObservableObject, IRecipient<CartUpdatedMessage>
 {
-    [ObservableProperty] private ObservableCollection<Cart> _cartItems = new();
+    [ObservableProperty] private ObservableCollection<CartItemViewModel> _cartItems = new();
 
     private readonly ILogger<CartViewModel> _logger;
     private readonly NavigationService _navigationService;
     private readonly CartService _cartService;
+
+    [ObservableProperty] private int _quantity;
+    [ObservableProperty] private int totalPrice;
+    [ObservableProperty]
+    private decimal _total;
+
 
     public CartViewModel(ILogger<CartViewModel> logger, NavigationService navigationService, CartService cartService)
     {
@@ -48,13 +54,24 @@ public partial class CartViewModel : ObservableObject, IRecipient<CartUpdatedMes
 
             foreach (var cartItem in loadedCartItems)
             {
-                CartItems.Add(cartItem);
+                var cartItemViewModel = new CartItemViewModel(_cartService, cartItem);
+                CartItems.Add(cartItemViewModel);
+            }
+            
+            foreach (var item in CartItems)
+            {
+                item.PropertyChanged += (_, _) => UpdateTotal();
             }
         }
         catch (Exception ex)
         {
             _logger.LogError($"Error: {ex}");
         }
+    }
+    
+    private void UpdateTotal()
+    {
+        Total = CartItems.Sum(item => item.ItemTotal);
     }
 
     [RelayCommand]
@@ -92,7 +109,7 @@ public partial class CartViewModel : ObservableObject, IRecipient<CartUpdatedMes
             throw;
         }
     }
-
+    
     public async void Receive(CartUpdatedMessage message)
     {
         // 🔁 Перезагружаем корзину, когда пришло сообщение

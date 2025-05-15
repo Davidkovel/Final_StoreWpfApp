@@ -41,4 +41,11 @@ public class CartService(CartRepository cartRepository) : INotifyPropertyChanged
     {
         await cartRepository.ClearCartAsync();
     }
+    
+    public async Task<bool> UpdateCartItemQuantity(int productId, int change)
+    {
+        
+        var sucess = await cartRepository.UpdateCartItemQuantity(productId, change);
+        return sucess;
+    }
 }

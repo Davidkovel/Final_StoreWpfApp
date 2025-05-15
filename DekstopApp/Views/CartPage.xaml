@@ -124,14 +124,16 @@
                                                 Margin="0 10">
                                         <Button Content="-"
                                                 Width="30"
-                                                Command="{Binding DecreaseQuantityCommand}" />
+                                                Command="{Binding DecreaseQuantityCommand}" 
+                                                CommandParameter="{Binding ProductId}"/>
                                         <TextBlock Text="{Binding Quantity}"
                                                    Width="30"
                                                    TextAlignment="Center"
                                                    VerticalAlignment="Center" />
                                         <Button Content="+"
                                                 Width="30"
-                                                Command="{Binding IncreaseQuantityCommand}" />
+                                                Command="{Binding IncreaseQuantityCommand}"
+                                                CommandParameter="{Binding ProductId}"/>
                                     </StackPanel>
 
                                     <!-- Удалить из корзины -->
