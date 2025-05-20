@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Threading.Tasks;
 using Dapper;
+using Data.Abstractions.Replication;
 using Data.DBCommands;
 using Microsoft.Data.SqlClient;
 
@@ -17,10 +18,12 @@ public interface IDatabaseProvider
 public class SqlServerDatabaseProvider : IDatabaseProvider
 {
     private readonly string _connectionString;
+    private readonly IReplicationConfigurator _replicationConfigurator;
 
-    public SqlServerDatabaseProvider(string connectionString)
+    public SqlServerDatabaseProvider(string connectionString, IReplicationConfigurator replicationConfigurator)
     {
         _connectionString = connectionString;
+        _replicationConfigurator = replicationConfigurator;
     }
 
     public async Task InitializeDatabaseAsync()
