@@ -1,52 +1,49 @@
-// using Data.Abstractions.NoSqlDatabase;
-//
-// namespace Data.Infrastructure.Caching;
-//
-// public class RedisCacheProvider : ICacheProvider
-// {
-//     private readonly string _connection;
-//     private readonly JsonSerializerSettings _serializerSettings;
-//     private ICacheProvider _cacheProviderImplementation;
-//
-//     public RedisCacheProvider(string connection)
-//     {
-//         _connection = connection;
-//         _serializerSettings = new JsonSerializerSettings
-//         {
-//             TypeNameHandling = TypeNameHandling.All
-//         };
-//     }
-//
-//     public async Task<T> GetAsync<T>(string key)
-//     {
-//         string cachedJson = await _redisDb.StringGetAsync(cacheKey);
-//
-//         // 2. Если ничего нет - возвращаем "пусто" (default для типа T)
-//         if (string.IsNullOrEmpty(cachedJson))
-//             return default;
-//
-//         // 3. Преобразуем JSON обратно в объект (например, в Product)
-//         return JsonConvert.DeserializeObject<T>(cachedJson);
-//     }
-//
-//     public async Task SetAsync<T>(string key, T value, TimeSpan? expiry = null)
-//     {
-//         // 1. Преобразуем объект (например Product) в JSON-строку
-//         string json = JsonConvert.SerializeObject(data);
-//
-//         // 2. Сохраняем в Redis
-//         await _redisDb.StringSetAsync(cacheKey, json, cacheTime);
-//     }
-//
-//     public Task RemoveAsync(string key)
-//     {
-//         return _cacheProviderImplementation.RemoveAsync(key);
-//     }
-//
-//     public Task<bool> ExistsAsync(string key)
-//     {
-//         return _cacheProviderImplementation.ExistsAsync(key);
-//     }
-//
-//     // ... остальные методы
-// }
+using Data.Abstractions.NoSqlDatabase;
+using StackExchange.Redis;
+using System.Text.Json;
+
+namespace Data.Infrastructure.Caching;
+
+public class RedisCacheProvider : ICacheProvider
+{
+    private readonly IDatabase _redisDb;
+    private readonly JsonSerializerOptions _serializerOptions;
+
+    public RedisCacheProvider(string connection)
+    {
+        var redis = ConnectionMultiplexer.Connect(connection);
+        _redisDb = redis.GetDatabase();
+
+        _serializerOptions = new JsonSerializerOptions
+        {
+            WriteIndented = false,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+    }
+
+    public async Task<T> GetAsync<T>(string key)
+    {
+        string cachedJson = await _redisDb.StringGetAsync(key);
+
+        if (string.IsNullOrEmpty(cachedJson))
+            return default;
+
+        return JsonSerializer.Deserialize<T>(cachedJson, _serializerOptions);
+    }
+
+    public async Task SetAsync<T>(string key, T value, TimeSpan? expiry = null)
+    {
+        string json = JsonSerializer.Serialize(value, _serializerOptions);
+        await _redisDb.StringSetAsync(key, json, expiry);
+    }
+
+    public Task RemoveAsync(string key)
+    {
+        return _redisDb.KeyDeleteAsync(key);
+    }
+
+    public Task<bool> ExistsAsync(string key)
+    {
+        return _redisDb.KeyExistsAsync(key);
+    }
+}

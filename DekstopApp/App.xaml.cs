@@ -4,8 +4,10 @@ using System.Data;
 using System.Windows;
 using Core.Repository;
 using Data.Abstractions.Database;
+using Data.Abstractions.NoSqlDatabase;
 using Data.DBCommands;
 using Data.DBProvider;
+using Data.Infrastructure.Caching;
 using Data.Repository;
 using DekstopApp.Services;
 using DekstopApp.ViewModels;
@@ -29,9 +31,10 @@ public partial class App : Application
         var config = ConfigLoader.LoadConfig();
 
         var connectionString = ConfigLoader.GetConnectionDBString();
+        var redisConnection = ConfigLoader.GetRedisConnectionString();
 
         var serviceCollection = new ServiceCollection();
-        ConfigureServices(serviceCollection, connectionString);
+        ConfigureServices(serviceCollection, connectionString, redisConnection);
 
         _serviceProvider = serviceCollection.BuildServiceProvider();
 
@@ -39,7 +42,7 @@ public partial class App : Application
         mainWindow.Show();
     }
 
-    private void ConfigureServices(IServiceCollection serviceLocator, string connectionString)
+    private void ConfigureServices(IServiceCollection serviceLocator, string connectionString, string redisConnection)
     {
         serviceLocator.AddLogging();
 
@@ -51,6 +54,10 @@ public partial class App : Application
         serviceLocator.AddSingleton<IProductSqlCommandProvider, ProductCommandProvider>();
         serviceLocator.AddSingleton<ICategorySqlCommandProvider, CategoryCommandProvider>();
         serviceLocator.AddSingleton<ICartSqlCommandProvider, CartCommandProvider>();
+
+        // Infastructure
+        serviceLocator.AddSingleton<ICacheProvider>(_ =>
+            new RedisCacheProvider(redisConnection));
 
         // Repositories
         serviceLocator.AddSingleton<ProductRepository, ProductRepositoryImpl>();
