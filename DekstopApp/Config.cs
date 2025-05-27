@@ -46,6 +46,8 @@ public class ConfigLoader
         var username = "sa";
         var password = "123456I!@";
         var database = "Shop";
+        
+        var redisHost = "localhost:6379";
 
         var config = new Dictionary<string, string>
         {
@@ -54,6 +56,7 @@ public class ConfigLoader
             { "Username", username },
             { "Password", password },
             { "Database", database },
+            { "RedisHost", redisHost },
         };
         
         return config;
@@ -68,5 +71,12 @@ public class ConfigLoader
                $"User Id={config["Username"]};" +
                $"Password={config["Password"]};" +
                "TrustServerCertificate=True;";
-    } 
+    }
+
+    public static string GetRedisConnectionString()
+    {
+        var config = LoadConfig();
+        return config["RedisHost"];
+    }
+    
 };
