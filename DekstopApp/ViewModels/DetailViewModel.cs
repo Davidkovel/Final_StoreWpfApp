@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Core.Entity;
+using Data.Models;
 using DekstopApp.Common;
 using DekstopApp.Services;
 
@@ -12,7 +13,7 @@ public partial class DetailViewModel : ObservableObject
 {
     private readonly NavigationService _navigationService;
 
-    [ObservableProperty] private Product? _selectedProduct;
+    [ObservableProperty] private ProductModel? _selectedProduct;
 
     private readonly CartService _cartService;
 
