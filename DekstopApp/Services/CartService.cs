@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Core.Entity;
 using Core.Repository;
+using Data.Models;
 
 namespace DekstopApp.Services;
 
@@ -17,7 +18,7 @@ public class CartService(CartRepository cartRepository) : INotifyPropertyChanged
         return carts;
     }
     
-    public async void AddItemToCart(Product product, int quantity=1)
+    public async void AddItemToCart(ProductModel product, int quantity=1)
     {
         var cart = new Cart
         {

@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using AutoMapper;
 using Core.Entity;
 using Core.Repository;
 using Data.Abstractions.NoSqlDatabase;
+using Data.Models;
 
 namespace DekstopApp.Services;
 
-public class ProductService(ProductRepository productRepository, ICacheProvider cacheProvider) : INotifyPropertyChanged
+public class ProductService(IMapper _mapper, ProductRepository productRepository, ICacheProvider cacheProvider)
+    : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -19,35 +22,39 @@ public class ProductService(ProductRepository productRepository, ICacheProvider 
         OnPropertyChanged();
     }
 
-    public async Task<IEnumerable<Product>> LoadProducts()
+    public async Task<IEnumerable<ProductModel>> LoadProducts()
     {
         const string cacheKey = "products";
 
-        var cachedProducts = await cacheProvider.GetAsync<IEnumerable<Product>>(cacheKey);
+        var cachedProducts = await cacheProvider.GetAsync<IEnumerable<ProductModel>>(cacheKey);
         if (cachedProducts != null)
             // Console.WriteLine("[DEBUG] Products from cache", cachedProducts);
             return cachedProducts;
 
         var products = await productRepository.GetProductsAsync();
 
-        await cacheProvider.SetAsync(cacheKey, products, TimeSpan.FromMinutes(10));
+        var productsModel = _mapper.Map<IEnumerable<ProductModel>>(products);
 
-        return products;
+        await cacheProvider.SetAsync(cacheKey, productsModel, TimeSpan.FromMinutes(10));
+
+        return productsModel;
     }
 
-    public async Task<IEnumerable<Product>> GetProductsByCategory(int categoryId)
+    public async Task<IEnumerable<ProductModel>> GetProductsByCategory(int categoryId)
     {
-        string cacheKey =  $"products:category:{categoryId}";
-        
-        var cachedProducts = await cacheProvider.GetAsync<IEnumerable<Product>>(cacheKey);
+        string cacheKey = $"products:category:{categoryId}";
+
+        var cachedProducts = await cacheProvider.GetAsync<IEnumerable<ProductModel>>(cacheKey);
         if (cachedProducts != null)
             return cachedProducts;
 
         var products = await productRepository.GetProductsByCategoryIdAsync(categoryId);
 
-        await cacheProvider.SetAsync(cacheKey, products, TimeSpan.FromMinutes(10));
-        
-        return products;
+        var productsModel = _mapper.Map<IEnumerable<ProductModel>>(products);
+
+        await cacheProvider.SetAsync(cacheKey, productsModel, TimeSpan.FromMinutes(10));
+
+        return productsModel;
     }
 
 

@@ -8,6 +8,7 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Core.Entity;
+using Data.Models;
 using DekstopApp.Services;
 using DekstopApp.Views;
 using Microsoft.Extensions.Logging;
@@ -16,7 +17,7 @@ namespace DekstopApp.ViewModels;
 
 public partial class HomeViewModel : ObservableObject
 {
-    [ObservableProperty] private ObservableCollection<Product> _products = new();
+    [ObservableProperty] private ObservableCollection<ProductModel> _products = new();
 
     [ObservableProperty] private ObservableCollection<Category> _categories = new();
 
@@ -44,14 +45,14 @@ public partial class HomeViewModel : ObservableObject
 
     public IAsyncRelayCommand LoadProductsCommand { get; }
     public IAsyncRelayCommand LoadCategoryCommand { get; }
-    public IRelayCommand<Product> ViewProductDetailCommand => new RelayCommand<Product>(ViewProductDetail);
+    public IRelayCommand<ProductModel> ViewProductDetailCommand => new RelayCommand<ProductModel>(ViewProductDetail);
 
     private async Task LoadProducts()
     {
         try
         {
             _logger.LogInformation("Loading product...");
-            IEnumerable<Product> loadedProducts;
+            IEnumerable<ProductModel> loadedProducts;
 
             if (SelectedCategoryId.HasValue)
             {
@@ -93,7 +94,7 @@ public partial class HomeViewModel : ObservableObject
         }
     }
 
-    private void ViewProductDetail(Product? product)
+    private void ViewProductDetail(ProductModel? product)
     {
         if (product != null)
         {
