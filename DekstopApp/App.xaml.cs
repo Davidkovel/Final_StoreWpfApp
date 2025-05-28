@@ -9,6 +9,7 @@ using Data.DBCommands;
 using Data.DBProvider;
 using Data.Infrastructure.Caching;
 using Data.Repository;
+using DekstopApp.Mapping;
 using DekstopApp.Services;
 using DekstopApp.ViewModels;
 using DekstopApp.Views;
@@ -46,6 +47,9 @@ public partial class App : Application
     {
         serviceLocator.AddLogging();
 
+        // Mapper
+        serviceLocator.AddAutoMapper(typeof(MappingProfile));
+        
         // Data Source
         serviceLocator.AddSingleton<IDatabaseProvider>(_ =>
             new SqlServerDatabaseProvider(connectionString));
