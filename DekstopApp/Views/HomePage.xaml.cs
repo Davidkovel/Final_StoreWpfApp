@@ -32,4 +32,9 @@ public partial class HomePage : UserControl
     {
         _navigationService.NavigateTo<CartPage, CartViewModel>();
     }
+    
+    private void OnGoLoginPageNavigationClick(object sender, RoutedEventArgs e)
+    {
+        _navigationService.NavigateTo<LoginPage, AuthViewModel>();
+    }
 }

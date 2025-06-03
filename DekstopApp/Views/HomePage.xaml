@@ -44,12 +44,19 @@
                             Style="{StaticResource MaterialDesignFlatButton}"
                             Foreground="Black"
                             FontWeight="Bold"
-                            Click="OnGoCartPageNavigationClick"/>
+                            Click="OnGoCartPageNavigationClick" />
                     <Button Content="О нас"
                             Margin="10 0"
                             Style="{StaticResource MaterialDesignFlatButton}"
                             Foreground="Black"
                             FontWeight="Bold" />
+                    <Button Content="Login"
+                            Margin="10 0"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="Black"
+                            FontWeight="Bold"
+                            Click="OnGoLoginPageNavigationClick"/>
+                
                 </StackPanel>
 
                 <!-- User Actions -->
@@ -86,7 +93,7 @@
                         <MenuItem Header="Категории"
                                   Foreground="#FFD700">
                             <MenuItem.ItemsSource>
-                                <Binding Path="Categories"/>
+                                <Binding Path="Categories" />
                             </MenuItem.ItemsSource>
                             <MenuItem.ItemTemplate>
                                 <DataTemplate>
@@ -94,7 +101,7 @@
                                               Command="{Binding DataContext.FilterByCategoryCommand, 
                                               RelativeSource={RelativeSource AncestorType=Menu}}"
                                               CommandParameter="{Binding Id}"
-                                              Foreground="#FFD700"/>
+                                              Foreground="#FFD700" />
                                 </DataTemplate>
                             </MenuItem.ItemTemplate>
                         </MenuItem>

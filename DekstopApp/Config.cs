@@ -18,6 +18,9 @@ public class ConfigLoader
         var password = DotNetEnv.Env.GetString("PASSWORD");
         var database = DotNetEnv.Env.GetString("DATABASE");
 
+        var supabaseApiKey = DotNetEnv.Env.GetString("SUPABASE_API_KEY");
+        var supabaseDBEndpoint = DotNetEnv.Env.GetString("SUPABASE_DB_ENDPOINT");
+
         Console.WriteLine(DotNetEnv.Env.GetString("HOST"));
         var config = new Dictionary<string, string>
         {
@@ -26,6 +29,8 @@ public class ConfigLoader
             { "Username", username },
             { "Password", password },
             { "Database", database },
+            { "SupabaseApiKey", supabaseApiKey },
+            { "SupabaseDBEndpoint", supabaseDBEndpoint },
         };
 
         foreach (var key in config.Keys)
@@ -46,8 +51,12 @@ public class ConfigLoader
         var username = "sa";
         var password = "123456I!@";
         var database = "Shop";
-        
+
         var redisHost = "localhost:6379";
+
+        var supabaseApiKey =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuaWl1b3ZldXhhYmJtZXdvZXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1MDM3MDUsImV4cCI6MjA2NDA3OTcwNX0.fm4SPKHMfPamTkfMQTriO8UxIOd-0dJ3i4MfzS-wXDk";
+        var supabaseDBEndpoint = "https://tniiuoveuxabbmewoewc.supabase.co";
 
         var config = new Dictionary<string, string>
         {
@@ -57,12 +66,14 @@ public class ConfigLoader
             { "Password", password },
             { "Database", database },
             { "RedisHost", redisHost },
+            { "SupabaseApiKey", supabaseApiKey },
+            { "SupabaseDBEndpoint", supabaseDBEndpoint },
         };
-        
+
         return config;
     }
 
-        
+
     public static string GetConnectionDBString()
     {
         var config = LoadConfig();
@@ -78,5 +89,14 @@ public class ConfigLoader
         var config = LoadConfig();
         return config["RedisHost"];
     }
-    
+
+    public static List<string> GetSupabaseConnectionStrings()
+    {
+        var config = LoadConfig();
+        return new List<string>
+        {
+            config["SupabaseApiKey"],
+            config["SupabaseDBEndpoint"]
+        };
+    }
 };
