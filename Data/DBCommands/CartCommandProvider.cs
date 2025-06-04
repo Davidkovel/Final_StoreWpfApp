@@ -20,8 +20,8 @@ public class CartCommandProvider : ICartSqlCommandProvider
             c.ProductId;";
     
     public string AddItemToCart() => @"
-        INSERT INTO Cart (ProductId, Quantity)
-        VALUES (@ProductId, @Quantity);";
+        INSERT INTO Cart (ProductId, UserId, Quantity)
+        VALUES (@ProductId, @UserId, @Quantity);";
     
     public string DeleteItemFromCart() => @"
         DELETE FROM Cart

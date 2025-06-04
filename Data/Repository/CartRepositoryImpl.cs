@@ -30,6 +30,7 @@ public class CartRepositoryImpl : CartRepository
         using var connection = await _databaseProvider.CreateConnectionAsync();
         var parameters = new DynamicParameters();
         parameters.Add("ProductId", cart.ProductId);
+        parameters.Add("UserId", cart.UserId);
         parameters.Add("Quantity", cart.Quantity);
         await connection.ExecuteAsync(_commandProvider.AddItemToCart(), parameters);
     }

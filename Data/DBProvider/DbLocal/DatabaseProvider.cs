@@ -21,6 +21,7 @@ public class SqlServerDatabaseProvider : IDatabaseProvider
     public SqlServerDatabaseProvider(string connectionString)
     {
         _connectionString = connectionString;
+        InitializeDatabaseAsync();
     }
 
     public async Task InitializeDatabaseAsync()
@@ -29,7 +30,6 @@ public class SqlServerDatabaseProvider : IDatabaseProvider
         {
             await using var connection = new SqlConnection(_connectionString);
             await connection.OpenAsync();
-
             // Создаем БД если не существует
             await ExecuteNonQueryAsync(connection, DatabaseCommandProvider.CreateDbCommandWithNotExists("Shop"));
 
@@ -79,6 +79,7 @@ public class SqlServerDatabaseProvider : IDatabaseProvider
     {
         try
         {
+            // Console.WriteLine($"Executing SQL command: {commandText}");
             await connection.ExecuteAsync(commandText);
         }
         catch (Exception ex)
