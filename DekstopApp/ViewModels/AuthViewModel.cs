@@ -11,6 +11,7 @@ public partial class AuthViewModel : ObservableObject
 {
     [ObservableProperty] protected string email = string.Empty;
     [ObservableProperty] protected string password = String.Empty;
+    [ObservableProperty] private bool _isLoggedIn = false;
 
     private readonly ILogger<AuthViewModel> _logger;
     private readonly AuthService _authService;
@@ -41,7 +42,9 @@ public partial class AuthViewModel : ObservableObject
         try
         {
             var user = await _authService.Login(emailFromUser, passwordFromUser);
-
+            _isLoggedIn = user != null;
+            Console.WriteLine(_isLoggedIn);
+            
             if (user == null)
             {
                 _logger.LogWarning("Login failed for user {Email}", email);
@@ -49,6 +52,7 @@ public partial class AuthViewModel : ObservableObject
             }
 
             _logger.LogInformation("User {Email} logged in successfully", email);
+            _authService.SetUser(user);
             return user;
         }
         catch (Exception ex)
@@ -64,7 +68,9 @@ public partial class AuthViewModel : ObservableObject
         try
         {
             var user = await _authService.Register(emailFromUser, passwordFromUser);
-
+            _isLoggedIn = user != null;
+            Console.WriteLine(_isLoggedIn);
+            
             if (user == null)
             {
                 _logger.LogWarning("Registration failed for user {Email}", email);
@@ -94,5 +100,5 @@ public partial class AuthViewModel : ObservableObject
         }
     }
 
-    public bool IsLoggedIn => _authService.IsLoggedIn;
+    // public bool IsLoggedIn => _authService.IsLoggedIn;
 }

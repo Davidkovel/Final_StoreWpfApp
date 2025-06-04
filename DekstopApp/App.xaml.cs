@@ -95,7 +95,8 @@ public partial class App : Application
 
         serviceLocator.AddSingleton<DetailViewModel>(sp => new DetailViewModel(
             navigationService: sp.GetRequiredService<NavigationService>(),
-            cartService: sp.GetRequiredService<CartService>()
+            cartService: sp.GetRequiredService<CartService>(),
+            authService: sp.GetRequiredService<AuthService>()
         ));
 
         serviceLocator.AddSingleton<CartViewModel>(sp => new CartViewModel(
@@ -112,12 +113,14 @@ public partial class App : Application
         // Register Views
         serviceLocator.AddSingleton<HomePage>(sp => new HomePage(
             navigationService: sp.GetRequiredService<NavigationService>(),
-            viewModel: sp.GetRequiredService<HomeViewModel>()
+            viewModel: sp.GetRequiredService<HomeViewModel>(),
+            authService: sp.GetRequiredService<AuthService>()
         ));
 
         serviceLocator.AddSingleton<DetailViewPage>(sp => new DetailViewPage(
             navigationService: sp.GetRequiredService<NavigationService>(),
-            viewModel: sp.GetRequiredService<DetailViewModel>()
+            viewModel: sp.GetRequiredService<DetailViewModel>(),
+            authService: sp.GetRequiredService<AuthService>()
         ));
 
         serviceLocator.AddSingleton<CartPage>(sp => new CartPage(

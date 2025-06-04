@@ -50,14 +50,24 @@
                             Style="{StaticResource MaterialDesignFlatButton}"
                             Foreground="Black"
                             FontWeight="Bold" />
-                    <Button Content="Login"
+                    <Button x:Name="LoginButton"
+                            Content="Login"
                             Margin="10 0"
                             Style="{StaticResource MaterialDesignFlatButton}"
                             Foreground="Black"
                             FontWeight="Bold"
                             Click="OnGoLoginPageNavigationClick"/>
+                    <Button x:Name="ProfileButton"
+                            Content="Profile"
+                            Margin="10 0"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="Black"
+                            FontWeight="Bold"
+                            Visibility="Collapsed" />
+
                 
                 </StackPanel>
+                
 
                 <!-- User Actions -->
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
