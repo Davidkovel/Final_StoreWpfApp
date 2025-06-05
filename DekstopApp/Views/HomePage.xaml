@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
              MinHeight="600" MinWidth="1000">
 
@@ -119,14 +120,21 @@
                 </Menu>
 
 
-                <TextBlock
-                    Grid.Column="1"
-                    Text="Search Bar"
-                    Foreground="#FFD700"
-                    FontSize="18"
-                    FontWeight="Bold"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center" />
+                <!-- Вставьте этот SearchBox -->
+                <TextBox Grid.Column="1"
+                         Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
+                         Width="200"
+                         Height="30"
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Center"
+                         Foreground="Black"
+                         Background="#FFD700"
+                         materialDesign:HintAssist.Hint="Поиск товаров..."
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
+                    </TextBox.InputBindings>
+                </TextBox>
 
 
                 <!-- TextBlock по центру -->

@@ -9,6 +9,7 @@ using Data.DBCommands;
 using Data.DBProvider;
 using Data.DBProvider.SupabaseRemote;
 using Data.Infrastructure.Caching;
+using Data.Infrastructure.ElasticSearch;
 using Data.Repository;
 using DekstopApp.Mapping;
 using DekstopApp.Services;
@@ -72,6 +73,8 @@ public partial class App : Application
         serviceLocator.AddSingleton<ICacheProvider>(_ =>
             new RedisCacheProvider(redisConnection));
 
+        serviceLocator.AddSingleton<IProductSearchProvider, ElasticsearchProvider>();
+
         // Repositories
         serviceLocator.AddSingleton<ProductRepository, ProductRepositoryImpl>();
         serviceLocator.AddSingleton<CategoryRepository, CategoryRepositoryImpl>();
@@ -84,6 +87,8 @@ public partial class App : Application
         serviceLocator.AddSingleton<CategoryService>();
         serviceLocator.AddSingleton<CartService>();
         serviceLocator.AddSingleton<AuthService>();
+        serviceLocator.AddSingleton<ProductSearchService>();
+
 
         // Register ViewModels
         serviceLocator.AddSingleton<HomeViewModel>(sp => new HomeViewModel(
@@ -108,6 +113,10 @@ public partial class App : Application
         serviceLocator.AddSingleton<AuthViewModel>(sp => new AuthViewModel(
             logger: sp.GetRequiredService<ILogger<AuthViewModel>>(),
             authService: sp.GetRequiredService<AuthService>()
+        ));
+
+        serviceLocator.AddSingleton<SearchViewModel>(sp => new SearchViewModel(
+            productSearchService: sp.GetRequiredService<ProductSearchService>()
         ));
 
         // Register Views
