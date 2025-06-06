@@ -15,7 +15,10 @@ public class ElasticsearchProvider : IProductSearchProvider
             .DefaultIndex("products");
 
         _client = new ElasticClient(settings);
+        
     }
+    
+    // @Todo Исправть проблему с подлкючение так как мб порт занят из за этого Elasticsearch не запускается
 
     public async Task CreateIndexAsync(string indexName)
     {
@@ -29,7 +32,23 @@ public class ElasticsearchProvider : IProductSearchProvider
 
     public async Task IndexProductAsync(Product product)
     {
-        await _client.IndexDocumentAsync(product);
+        try 
+        {
+            var response = await _client.IndexDocumentAsync(product);
+            await _client.Indices.RefreshAsync();
+            if (!response.IsValid)
+            {
+                Console.WriteLine($"Ошибка индексации: {response.DebugInformation}");
+            }
+            else
+            {
+                Console.WriteLine($"Документ добавлен, ID: {response.Id}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка: {ex.Message}");
+        }
     }
 
     public async Task<List<Product>> SearchProductsAsync(string query)
@@ -44,5 +63,28 @@ public class ElasticsearchProvider : IProductSearchProvider
         );
 
         return response.Documents.ToList();
+    }
+
+    public async Task<IEnumerable<Product>> GetSuggestionsAsync(string query, int size, CancellationToken ct = default)
+    {
+        var response = await _client.SearchAsync<Product>(s => s
+            .Query(q => q
+                .MultiMatch(m => m
+                    .Fields(f => f
+                        .Field(p => p.Name)
+                        .Field(p => p.Description)
+                    )
+                    .Query(query)
+                    .Fuzziness(Fuzziness.Auto)
+                )
+            )
+            .Size(size)
+            .Highlight(h => h
+                .Fields(f => f
+                    .Field(p => p.Name)
+                )
+            ), ct);
+
+        return response.Documents;
     }
 }

@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.Windows;
+using AutoMapper;
 using Core.Repository;
 using Data.Abstractions.Database;
 using Data.Abstractions.NoSqlDatabase;
@@ -95,7 +96,9 @@ public partial class App : Application
             logger: sp.GetRequiredService<ILogger<HomeViewModel>>(),
             productService: sp.GetRequiredService<ProductService>(),
             categoryService: sp.GetRequiredService<CategoryService>(),
-            navigationService: sp.GetRequiredService<NavigationService>()
+            productElasticSearchService: sp.GetRequiredService<ProductSearchService>(),
+            navigationService: sp.GetRequiredService<NavigationService>(),
+            mapper: sp.GetRequiredService<IMapper>()
         ));
 
         serviceLocator.AddSingleton<DetailViewModel>(sp => new DetailViewModel(
@@ -115,9 +118,12 @@ public partial class App : Application
             authService: sp.GetRequiredService<AuthService>()
         ));
 
-        serviceLocator.AddSingleton<SearchViewModel>(sp => new SearchViewModel(
-            productSearchService: sp.GetRequiredService<ProductSearchService>()
-        ));
+        // serviceLocator.AddSingleton<SearchViewModel>(sp => new SearchViewModel(
+        //     productSearchService: sp.GetRequiredService<ProductSearchService>(),
+        //     navigationService: sp.GetRequiredService<NavigationService>(),
+        //     productService: sp.GetRequiredService<ProductService>(),
+        //     mapper: sp.GetRequiredService<IMapper>()
+        // ));
 
         // Register Views
         serviceLocator.AddSingleton<HomePage>(sp => new HomePage(
