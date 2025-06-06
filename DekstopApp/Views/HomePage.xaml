@@ -44,13 +44,30 @@
                             Style="{StaticResource MaterialDesignFlatButton}"
                             Foreground="Black"
                             FontWeight="Bold"
-                            Click="OnGoCartPageNavigationClick"/>
+                            Click="OnGoCartPageNavigationClick" />
                     <Button Content="О нас"
                             Margin="10 0"
                             Style="{StaticResource MaterialDesignFlatButton}"
                             Foreground="Black"
                             FontWeight="Bold" />
+                    <Button x:Name="LoginButton"
+                            Content="Login"
+                            Margin="10 0"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="Black"
+                            FontWeight="Bold"
+                            Click="OnGoLoginPageNavigationClick"/>
+                    <Button x:Name="ProfileButton"
+                            Content="Profile"
+                            Margin="10 0"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="Black"
+                            FontWeight="Bold"
+                            Visibility="Collapsed" />
+
+                
                 </StackPanel>
+                
 
                 <!-- User Actions -->
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
@@ -86,7 +103,7 @@
                         <MenuItem Header="Категории"
                                   Foreground="#FFD700">
                             <MenuItem.ItemsSource>
-                                <Binding Path="Categories"/>
+                                <Binding Path="Categories" />
                             </MenuItem.ItemsSource>
                             <MenuItem.ItemTemplate>
                                 <DataTemplate>
@@ -94,7 +111,7 @@
                                               Command="{Binding DataContext.FilterByCategoryCommand, 
                                               RelativeSource={RelativeSource AncestorType=Menu}}"
                                               CommandParameter="{Binding Id}"
-                                              Foreground="#FFD700"/>
+                                              Foreground="#FFD700" />
                                 </DataTemplate>
                             </MenuItem.ItemTemplate>
                         </MenuItem>

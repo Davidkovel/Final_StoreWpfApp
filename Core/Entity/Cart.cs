@@ -4,7 +4,7 @@ public class Cart
 {
     public int Id { get; set; }
 
-    // public int UserId { get; set; } Temporarily without Auth
+    public int UserId { get; set; }
     public int ProductId { get; set; }
     public int Quantity { get; set; }
     
@@ -22,9 +22,10 @@ public class Cart
         ProductImageUrl = string.Empty;
     }
     
-    public Cart(int productId, int quantity, string productName, decimal productPrice, string productImageUrl)
+    public Cart(int productId, int userId, int quantity, string productName, decimal productPrice, string productImageUrl)
     {
         ProductId = productId;
+        UserId = userId;
         Quantity = quantity;
         ProductName = productName;
         ProductPrice = productPrice;

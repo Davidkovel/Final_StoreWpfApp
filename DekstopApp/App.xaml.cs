@@ -7,6 +7,7 @@ using Data.Abstractions.Database;
 using Data.Abstractions.NoSqlDatabase;
 using Data.DBCommands;
 using Data.DBProvider;
+using Data.DBProvider.SupabaseRemote;
 using Data.Infrastructure.Caching;
 using Data.Repository;
 using DekstopApp.Mapping;
@@ -33,9 +34,13 @@ public partial class App : Application
 
         var connectionString = ConfigLoader.GetConnectionDBString();
         var redisConnection = ConfigLoader.GetRedisConnectionString();
+        var supabaseConnectionStrings = ConfigLoader.GetSupabaseConnectionStrings();
+
+        string supabaseApiKey = supabaseConnectionStrings[0];
+        string supabaseEndpoint = supabaseConnectionStrings[1];
 
         var serviceCollection = new ServiceCollection();
-        ConfigureServices(serviceCollection, connectionString, redisConnection);
+        ConfigureServices(serviceCollection, connectionString, redisConnection, supabaseApiKey, supabaseEndpoint);
 
         _serviceProvider = serviceCollection.BuildServiceProvider();
 
@@ -43,16 +48,20 @@ public partial class App : Application
         mainWindow.Show();
     }
 
-    private void ConfigureServices(IServiceCollection serviceLocator, string connectionString, string redisConnection)
+    private void ConfigureServices(IServiceCollection serviceLocator, string connectionString, string redisConnection,
+        string supabaseApiKey, string supabaseEndpoint)
     {
         serviceLocator.AddLogging();
 
         // Mapper
         serviceLocator.AddAutoMapper(typeof(MappingProfile));
-        
+
         // Data Source
         serviceLocator.AddSingleton<IDatabaseProvider>(_ =>
             new SqlServerDatabaseProvider(connectionString));
+
+        serviceLocator.AddSingleton<ISupabaseRemoteProvider>(_ =>
+            new SupabaseRemoteProvider(supabaseApiKey, supabaseEndpoint));
 
         // Command Providers
         serviceLocator.AddSingleton<IProductSqlCommandProvider, ProductCommandProvider>();
@@ -67,12 +76,14 @@ public partial class App : Application
         serviceLocator.AddSingleton<ProductRepository, ProductRepositoryImpl>();
         serviceLocator.AddSingleton<CategoryRepository, CategoryRepositoryImpl>();
         serviceLocator.AddSingleton<CartRepository, CartRepositoryImpl>();
+        serviceLocator.AddSingleton<IAuthRepository, AuthRepository>();
 
         // Register Services / Use Cases
         serviceLocator.AddSingleton<NavigationService>();
         serviceLocator.AddSingleton<ProductService>();
         serviceLocator.AddSingleton<CategoryService>();
         serviceLocator.AddSingleton<CartService>();
+        serviceLocator.AddSingleton<AuthService>();
 
         // Register ViewModels
         serviceLocator.AddSingleton<HomeViewModel>(sp => new HomeViewModel(
@@ -84,7 +95,8 @@ public partial class App : Application
 
         serviceLocator.AddSingleton<DetailViewModel>(sp => new DetailViewModel(
             navigationService: sp.GetRequiredService<NavigationService>(),
-            cartService: sp.GetRequiredService<CartService>()
+            cartService: sp.GetRequiredService<CartService>(),
+            authService: sp.GetRequiredService<AuthService>()
         ));
 
         serviceLocator.AddSingleton<CartViewModel>(sp => new CartViewModel(
@@ -93,20 +105,37 @@ public partial class App : Application
             cartService: sp.GetRequiredService<CartService>()
         ));
 
+        serviceLocator.AddSingleton<AuthViewModel>(sp => new AuthViewModel(
+            logger: sp.GetRequiredService<ILogger<AuthViewModel>>(),
+            authService: sp.GetRequiredService<AuthService>()
+        ));
+
         // Register Views
         serviceLocator.AddSingleton<HomePage>(sp => new HomePage(
             navigationService: sp.GetRequiredService<NavigationService>(),
-            viewModel: sp.GetRequiredService<HomeViewModel>()
+            viewModel: sp.GetRequiredService<HomeViewModel>(),
+            authService: sp.GetRequiredService<AuthService>()
         ));
 
         serviceLocator.AddSingleton<DetailViewPage>(sp => new DetailViewPage(
             navigationService: sp.GetRequiredService<NavigationService>(),
-            viewModel: sp.GetRequiredService<DetailViewModel>()
+            viewModel: sp.GetRequiredService<DetailViewModel>(),
+            authService: sp.GetRequiredService<AuthService>()
         ));
 
         serviceLocator.AddSingleton<CartPage>(sp => new CartPage(
             navigationService: sp.GetRequiredService<NavigationService>(),
             viewModel: sp.GetRequiredService<CartViewModel>()
+        ));
+
+        serviceLocator.AddSingleton<LoginPage>(sp => new LoginPage(
+            navigationService: sp.GetRequiredService<NavigationService>(),
+            authViewModel: sp.GetRequiredService<AuthViewModel>()
+        ));
+
+        serviceLocator.AddSingleton<RegisterPage>(sp => new RegisterPage(
+            navigationService: sp.GetRequiredService<NavigationService>(),
+            authViewModel: sp.GetRequiredService<AuthViewModel>()
         ));
 
         // Register MainWindow

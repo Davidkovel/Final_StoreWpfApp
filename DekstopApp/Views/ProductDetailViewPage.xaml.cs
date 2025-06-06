@@ -10,17 +10,21 @@ namespace DekstopApp.Views;
 public partial class DetailViewPage : UserControl
 {
     private readonly NavigationService _navigationService;
+    private readonly AuthService _authService;
 
     //
     // [ObservableProperty] private Product _selectedProduct;
     //
     // [ObservableProperty] private int _quantity = 1;
     //
-    public DetailViewPage(NavigationService navigationService, DetailViewModel viewModel)
+    public DetailViewPage(NavigationService navigationService, DetailViewModel viewModel, AuthService authService)
     {
         InitializeComponent();
         DataContext = viewModel;
         _navigationService = navigationService;
+        _authService = authService;
+        
+        
     }
 
     private void OnGoBackNavigationClick(object sender, System.Windows.RoutedEventArgs e)

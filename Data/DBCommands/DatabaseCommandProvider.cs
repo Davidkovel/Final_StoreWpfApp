@@ -56,8 +56,12 @@ public class DatabaseCommandProvider
                 CREATE TABLE Cart (
                     Id INT PRIMARY KEY IDENTITY(1,1),
                     ProductId INT NOT NULL,
+                    UserId INT NOT NULL,
                     Quantity INT NOT NULL DEFAULT 1,
                     CONSTRAINT FK_Cart_Products FOREIGN KEY (ProductId) REFERENCES Products(Id)
+                );
+                PRINT 'Table Cart created successfully.';
+            END
         ";
 
     public static string DropTablesCommand() => @"
