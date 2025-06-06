@@ -3,8 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:global="clr-namespace:"
              mc:Ignorable="d"
              MinHeight="600" MinWidth="1000">
+    
+    <UserControl.Resources>
+        <global:CountToVisibilityConverter x:Key="CountToVisibilityConverter" />
+    </UserControl.Resources>
+
 
     <Grid Background="#F5F5F5">
         <Grid.RowDefinitions>
@@ -56,7 +63,7 @@
                             Style="{StaticResource MaterialDesignFlatButton}"
                             Foreground="Black"
                             FontWeight="Bold"
-                            Click="OnGoLoginPageNavigationClick"/>
+                            Click="OnGoLoginPageNavigationClick" />
                     <Button x:Name="ProfileButton"
                             Content="Profile"
                             Margin="10 0"
@@ -65,9 +72,9 @@
                             FontWeight="Bold"
                             Visibility="Collapsed" />
 
-                
+
                 </StackPanel>
-                
+
 
                 <!-- User Actions -->
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
@@ -119,6 +126,58 @@
                 </Menu>
 
 
+                <StackPanel Grid.Column="1"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Width="300">
+
+                    <TextBox Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                             Foreground="Black"
+                             Background="#FFD700"
+                             materialDesign:HintAssist.Hint="Поиск товаров...">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+
+                    <!-- Выпадающие подсказки -->
+                    <ListBox ItemsSource="{Binding SearchSuggestions}"
+                             Visibility="{Binding SearchSuggestions.Count, 
+                                Converter={StaticResource CountToVisibilityConverter}}"
+                             MaxHeight="200"
+                             Background="#FFD700"
+                             BorderThickness="0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Button Content="{Binding Name}"
+                                        Command="{Binding DataContext.ShowProductDetailsCommand, 
+                                        RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        HorizontalContentAlignment="Left" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+
+                <!-- ~1~ Вставьте этот SearchBox @1@ -->
+                <!-- <TextBox Grid.Column="1" -->
+                <!--          Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" -->
+                <!--          Width="200" -->
+                <!--          Height="30" -->
+                <!--          VerticalAlignment="Center" -->
+                <!--          HorizontalAlignment="Center" -->
+                <!--          Foreground="Black" -->
+                <!--          Background="#FFD700" -->
+                <!--          materialDesign:HintAssist.Hint="Поиск товаров..." -->
+                <!--          Style="{StaticResource MaterialDesignOutlinedTextBox}"> -->
+                <!--     <TextBox.InputBindings> -->
+                <!--         <KeyBinding Key="Enter" Command="{Binding SearchCommand}" /> -->
+                <!--     </TextBox.InputBindings> -->
+                <!-- </TextBox> -->
+
+
                 <!-- TextBlock по центру -->
                 <TextBlock
                     Grid.Column="1"
@@ -126,7 +185,7 @@
                     Foreground="#FFD700"
                     FontSize="18"
                     FontWeight="Bold"
-                    HorizontalAlignment="Center"
+                    HorizontalAlignment="Right"
                     VerticalAlignment="Center" />
             </Grid>
         </Border>

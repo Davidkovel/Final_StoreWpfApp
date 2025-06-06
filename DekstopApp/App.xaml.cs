@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.Windows;
+using AutoMapper;
 using Core.Repository;
 using Data.Abstractions.Database;
 using Data.Abstractions.NoSqlDatabase;
@@ -9,6 +10,7 @@ using Data.DBCommands;
 using Data.DBProvider;
 using Data.DBProvider.SupabaseRemote;
 using Data.Infrastructure.Caching;
+using Data.Infrastructure.ElasticSearch;
 using Data.Repository;
 using DekstopApp.Mapping;
 using DekstopApp.Services;
@@ -72,6 +74,8 @@ public partial class App : Application
         serviceLocator.AddSingleton<ICacheProvider>(_ =>
             new RedisCacheProvider(redisConnection));
 
+        serviceLocator.AddSingleton<IProductSearchProvider, ElasticsearchProvider>();
+
         // Repositories
         serviceLocator.AddSingleton<ProductRepository, ProductRepositoryImpl>();
         serviceLocator.AddSingleton<CategoryRepository, CategoryRepositoryImpl>();
@@ -84,13 +88,17 @@ public partial class App : Application
         serviceLocator.AddSingleton<CategoryService>();
         serviceLocator.AddSingleton<CartService>();
         serviceLocator.AddSingleton<AuthService>();
+        serviceLocator.AddSingleton<ProductSearchService>();
+
 
         // Register ViewModels
         serviceLocator.AddSingleton<HomeViewModel>(sp => new HomeViewModel(
             logger: sp.GetRequiredService<ILogger<HomeViewModel>>(),
             productService: sp.GetRequiredService<ProductService>(),
             categoryService: sp.GetRequiredService<CategoryService>(),
-            navigationService: sp.GetRequiredService<NavigationService>()
+            productElasticSearchService: sp.GetRequiredService<ProductSearchService>(),
+            navigationService: sp.GetRequiredService<NavigationService>(),
+            mapper: sp.GetRequiredService<IMapper>()
         ));
 
         serviceLocator.AddSingleton<DetailViewModel>(sp => new DetailViewModel(
@@ -109,6 +117,13 @@ public partial class App : Application
             logger: sp.GetRequiredService<ILogger<AuthViewModel>>(),
             authService: sp.GetRequiredService<AuthService>()
         ));
+
+        // serviceLocator.AddSingleton<SearchViewModel>(sp => new SearchViewModel(
+        //     productSearchService: sp.GetRequiredService<ProductSearchService>(),
+        //     navigationService: sp.GetRequiredService<NavigationService>(),
+        //     productService: sp.GetRequiredService<ProductService>(),
+        //     mapper: sp.GetRequiredService<IMapper>()
+        // ));
 
         // Register Views
         serviceLocator.AddSingleton<HomePage>(sp => new HomePage(
