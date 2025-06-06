@@ -110,6 +110,10 @@
             </Grid>
         </ScrollViewer>
 
+        <!-- Add Comment -->
+        
+        <!--     Comments --> 
+        
         <!-- Add to Cart Button -->
         <Button Grid.Row="2"
                 Content="Добавить в корзину"

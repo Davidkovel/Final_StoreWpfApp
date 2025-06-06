@@ -64,6 +64,23 @@ public class DatabaseCommandProvider
             END
         ";
 
+    public static string CreateCommentsTableIfNotExists() => @"
+            IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Comments')
+            BEGIN
+                CREATE TABLE Comments (
+                    Id INT PRIMARY KEY IDENTITY(1,1),
+                    UserId INT NOT NULL,
+                    ProductId INT NOT NULL,
+                    Text NVARCHAR(MAX) NOT NULL,
+                    Rating INT NULL CHECK (Rating BETWEEN 1 AND 5),
+                    CreatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
+                    UpdatedAt DATETIME2 NULL,
+                    FOREIGN KEY (ProductId) REFERENCES Products(Id)
+                );
+                PRINT 'Table Comments created successfully.';
+            END
+        ";
+
     public static string DropTablesCommand() => @"
             IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Products')
             BEGIN

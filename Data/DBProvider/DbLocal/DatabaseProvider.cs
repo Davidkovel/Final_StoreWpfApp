@@ -40,6 +40,7 @@ public class SqlServerDatabaseProvider : IDatabaseProvider
             await ExecuteNonQueryAsync(connection, DatabaseCommandProvider.CreateCategoriesTableIfNotExists());
             await ExecuteNonQueryAsync(connection, DatabaseCommandProvider.CreateTablesCommandIfNotExist());
             await ExecuteNonQueryAsync(connection, DatabaseCommandProvider.CreateCartTableIfNotExists());
+            await ExecuteNonQueryAsync(connection, DatabaseCommandProvider.CreateCommentsTableIfNotExists());
         }
         catch (Exception ex)
         {
