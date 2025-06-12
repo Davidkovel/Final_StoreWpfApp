@@ -67,6 +67,7 @@ public partial class App : Application
         serviceLocator.AddSingleton<IProductSqlCommandProvider, ProductCommandProvider>();
         serviceLocator.AddSingleton<ICategorySqlCommandProvider, CategoryCommandProvider>();
         serviceLocator.AddSingleton<ICartSqlCommandProvider, CartCommandProvider>();
+        serviceLocator.AddSingleton<ICommentSqlCommandProvider, CommentCommandProvider>();
 
         // Infastructure
         serviceLocator.AddSingleton<ICacheProvider>(_ =>
@@ -77,6 +78,7 @@ public partial class App : Application
         serviceLocator.AddSingleton<CategoryRepository, CategoryRepositoryImpl>();
         serviceLocator.AddSingleton<CartRepository, CartRepositoryImpl>();
         serviceLocator.AddSingleton<IAuthRepository, AuthRepository>();
+        serviceLocator.AddSingleton<CommentRepository, CommentRepositoryImpl>();
 
         // Register Services / Use Cases
         serviceLocator.AddSingleton<NavigationService>();
@@ -84,6 +86,7 @@ public partial class App : Application
         serviceLocator.AddSingleton<CategoryService>();
         serviceLocator.AddSingleton<CartService>();
         serviceLocator.AddSingleton<AuthService>();
+        serviceLocator.AddSingleton<CommentService>();
 
         // Register ViewModels
         serviceLocator.AddSingleton<HomeViewModel>(sp => new HomeViewModel(
@@ -96,7 +99,8 @@ public partial class App : Application
         serviceLocator.AddSingleton<DetailViewModel>(sp => new DetailViewModel(
             navigationService: sp.GetRequiredService<NavigationService>(),
             cartService: sp.GetRequiredService<CartService>(),
-            authService: sp.GetRequiredService<AuthService>()
+            authService: sp.GetRequiredService<AuthService>(),
+            commentService: sp.GetRequiredService<CommentService>()
         ));
 
         serviceLocator.AddSingleton<CartViewModel>(sp => new CartViewModel(
