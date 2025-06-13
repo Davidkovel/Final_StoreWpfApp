@@ -17,17 +17,21 @@ public interface IDatabaseProvider
 public class SqlServerDatabaseProvider : IDatabaseProvider
 {
     private readonly string _connectionString;
+    private readonly Task _initializationTask;
 
     public SqlServerDatabaseProvider(string connectionString)
     {
         _connectionString = connectionString;
-        InitializeDatabaseAsync();
+        _initializationTask = InitializeDatabaseAsync();
     }
+
+    public Task initializationTask => _initializationTask;
 
     public async Task InitializeDatabaseAsync()
     {
         try
         {
+            Console.WriteLine("Initializing database provider");
             await using var connection = new SqlConnection(_connectionString);
             await connection.OpenAsync();
             // Создаем БД если не существует
@@ -40,6 +44,7 @@ public class SqlServerDatabaseProvider : IDatabaseProvider
             await ExecuteNonQueryAsync(connection, DatabaseCommandProvider.CreateCategoriesTableIfNotExists());
             await ExecuteNonQueryAsync(connection, DatabaseCommandProvider.CreateTablesCommandIfNotExist());
             await ExecuteNonQueryAsync(connection, DatabaseCommandProvider.CreateCartTableIfNotExists());
+            await ExecuteNonQueryAsync(connection, DatabaseCommandProvider.CreateCommentsTableIfNotExists());
         }
         catch (Exception ex)
         {
@@ -52,6 +57,7 @@ public class SqlServerDatabaseProvider : IDatabaseProvider
     {
         try
         {
+            Console.WriteLine("Resetting database provider");
             await using var connection = new SqlConnection(_connectionString);
             await connection.OpenAsync();
 
@@ -70,6 +76,8 @@ public class SqlServerDatabaseProvider : IDatabaseProvider
 
     public async Task<IDbConnection> CreateConnectionAsync()
     {
+        await initializationTask;
+        
         var connection = new SqlConnection(_connectionString);
         await connection.OpenAsync();
         return connection;

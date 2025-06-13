@@ -23,8 +23,15 @@ public partial class DetailViewPage : UserControl
         DataContext = viewModel;
         _navigationService = navigationService;
         _authService = authService;
-        
-        
+
+        viewModel.PropertyChanged += (s, e) =>
+        {
+            if (e.PropertyName == nameof(DetailViewModel.SelectedProduct))
+            {
+                if (viewModel.LoadCommentsCommand.CanExecute(null))
+                    viewModel.LoadCommentsCommand.Execute(null);
+            }
+        };
     }
 
     private void OnGoBackNavigationClick(object sender, System.Windows.RoutedEventArgs e)

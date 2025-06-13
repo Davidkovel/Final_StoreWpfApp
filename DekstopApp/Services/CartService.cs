@@ -18,7 +18,14 @@ public class CartService(CartRepository cartRepository) : INotifyPropertyChanged
         return carts;
     }
     
-    public async void AddItemToCart(ProductModel product, int userId, int quantity=1)
+    public async Task<IEnumerable<Cart>> LoadCartItemsByUserId(string userId)
+    {
+        var carts = await cartRepository.GetCartItemsByUserIdAsync(userId);
+        return carts;
+    }
+
+    
+    public async void AddItemToCart(ProductModel product, string userId, int quantity=1)
     {
         var cart = new Cart
         {

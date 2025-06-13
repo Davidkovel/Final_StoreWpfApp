@@ -3,6 +3,7 @@ namespace Data.Abstractions.Database;
 public interface ICartSqlCommandProvider
 {
     public string GetCartItems();
+    public string GetCartItemByUserId();
     public string AddItemToCart();
     public string DeleteItemFromCart();
     public string ClearCart();

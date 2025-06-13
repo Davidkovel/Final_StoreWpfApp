@@ -23,7 +23,7 @@ public class DatabaseCommandProvider
                     Name NVARCHAR(100) NOT NULL,
                     Description NVARCHAR(MAX),
                     Price DECIMAL(18,2) NOT NULL,
-                    ImageUrl NVARCHAR(255) NULL,
+                    ImageUrl NVARCHAR(MAX) NULL,
                     CategoryId INT NOT NULL,
                     Quantity INT NOT NULL DEFAULT 0,
                     CreatedAt DATETIME2 DEFAULT GETDATE(),
@@ -56,7 +56,7 @@ public class DatabaseCommandProvider
                 CREATE TABLE Cart (
                     Id INT PRIMARY KEY IDENTITY(1,1),
                     ProductId INT NOT NULL,
-                    UserId INT NOT NULL,
+                    UserId NVARCHAR(MAX) NOT NULL,
                     Quantity INT NOT NULL DEFAULT 1,
                     CONSTRAINT FK_Cart_Products FOREIGN KEY (ProductId) REFERENCES Products(Id)
                 );
@@ -64,17 +64,49 @@ public class DatabaseCommandProvider
             END
         ";
 
-    public static string DropTablesCommand() => @"
-            IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Products')
+    public static string CreateCommentsTableIfNotExists() => @"
+            IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Comments')
             BEGIN
-                DROP TABLE Products;
-                PRINT 'Table Products dropped successfully.';
-            END
-            
-            IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Categories')
-            BEGIN
-                DROP TABLE Categories;
-                PRINT 'Table Categories dropped successfully.';
+                CREATE TABLE Comments (
+                    Id INT PRIMARY KEY IDENTITY(1,1),
+                    UserId NVARCHAR(MAX) NOT NULL,
+                    ProductId INT NOT NULL,
+                    Text NVARCHAR(MAX) NOT NULL,
+                    Rating INT NULL CHECK (Rating BETWEEN 1 AND 5),
+                    CreatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
+                    UpdatedAt DATETIME2 NULL,
+                    FOREIGN KEY (ProductId) REFERENCES Products(Id)
+                );
+                PRINT 'Table Comments created successfully.';
             END
         ";
+
+    public static string DropTablesCommand() => @"
+        EXEC sp_MSforeachtable 'ALTER TABLE ? NOCHECK CONSTRAINT ALL';
+
+        IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Comments')
+        BEGIN
+            DROP TABLE Comments;
+            PRINT 'Table Comments dropped successfully.';
+        END
+
+        IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Cart')
+        BEGIN
+            DROP TABLE Cart;
+            PRINT 'Table Cart dropped successfully.';
+        END
+
+        IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Products')
+        BEGIN
+            DROP TABLE Products;
+            PRINT 'Table Products dropped successfully.';
+        END
+
+        IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Categories')
+        BEGIN
+            DROP TABLE Categories;
+            PRINT 'Table Categories dropped successfully.';
+        END
+
+    ";
 }

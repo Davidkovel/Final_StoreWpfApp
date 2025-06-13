@@ -36,7 +36,6 @@ public partial class AuthViewModel : ObservableObject
         }
     }
 
-//    [RelayCommand]
     public async Task<User?> Login(string emailFromUser, string passwordFromUser)
     {
         try
@@ -62,7 +61,6 @@ public partial class AuthViewModel : ObservableObject
         }
     }
 
-    // [RelayCommand]
     public async Task<User?> Register(string emailFromUser, string passwordFromUser)
     {
         try

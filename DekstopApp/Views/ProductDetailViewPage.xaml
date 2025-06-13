@@ -8,9 +8,13 @@
 
     <Grid Background="#F5F5F5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />  <!-- Back Button -->
+            <RowDefinition Height="*" />     <!-- Product Details -->
+            <RowDefinition Height="Auto" />  <!-- Comment Input -->
+            <RowDefinition Height="Auto" />  <!-- Add Comment Button -->
+            <RowDefinition Height="*" />     <!-- Comments List -->
+            <RowDefinition Height="Auto" />  <!-- Add to Cart Button -->
+
         </Grid.RowDefinitions>
 
         <!-- Back Button -->
@@ -110,8 +114,40 @@
             </Grid>
         </ScrollViewer>
 
+        <TextBox Grid.Row="2" Text="{Binding NewCommentText}" />
+
+        <Button Grid.Row="3" Command="{Binding AddCommentCommand}"
+                CommandParameter="{Binding NewCommentText}"
+                Content="Add Comment" />
+
+
+        <ScrollViewer Grid.Row="4"
+                      VerticalScrollBarVisibility="Auto"
+                      Margin="0 40 0 0">
+            <ItemsControl ItemsSource="{Binding Comments}"
+                          Margin="20 0">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="LightGray"
+                                BorderThickness="0 0 0 1"
+                                Padding="0 5"
+                                Margin="0 5">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Text}"
+                                           TextWrapping="Wrap"
+                                           FontSize="14" />
+                                <TextBlock Text="{Binding CreatedAt, StringFormat='Добавлено: {0:dd.MM.yyyy HH:mm}'}"
+                                           FontSize="12"
+                                           Foreground="Gray" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
         <!-- Add to Cart Button -->
-        <Button Grid.Row="2"
+        <Button Grid.Row="5"
                 Content="Добавить в корзину"
                 HorizontalAlignment="Stretch"
                 Margin="20"
