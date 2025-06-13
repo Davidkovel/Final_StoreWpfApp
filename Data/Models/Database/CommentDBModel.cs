@@ -1,6 +1,6 @@
 namespace Data.Models;
 
-public class CommentModel
+public class CommentDBModel
 {
     public int Id { get; set; }
     public int UserId { get; set; }
@@ -12,7 +12,7 @@ public class CommentModel
 
     public ProductModel Product { get; set; }
 
-    public CommentModel()
+    public CommentDBModel()
     {
     }
 }

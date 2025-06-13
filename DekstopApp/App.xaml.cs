@@ -5,6 +5,7 @@ using System.Windows;
 using Core.Repository;
 using Data.Abstractions.Database;
 using Data.Abstractions.NoSqlDatabase;
+using Data.Database.Abstractions;
 using Data.DBCommands;
 using Data.DBProvider;
 using Data.DBProvider.SupabaseRemote;

@@ -3,6 +3,7 @@ using Core.Entity;
 using Core.Repository;
 using Dapper;
 using Data.Abstractions.Database;
+using Data.Database.Abstractions;
 using Data.DBProvider;
 using Microsoft.Data.SqlClient;
 

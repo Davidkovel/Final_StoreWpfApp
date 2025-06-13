@@ -20,7 +20,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="DBProvider\DbRemote\" />
+      <Folder Include="Context\" />
+      <Folder Include="Database\Commands\Base\" />
+      <Folder Include="Database\Configuration\" />
+      <Folder Include="Extensions\" />
+      <Folder Include="Infrastructure\Email\" />
+      <Folder Include="Infrastructure\External\" />
+      <Folder Include="Migrations\" />
     </ItemGroup>
 
 </Project>

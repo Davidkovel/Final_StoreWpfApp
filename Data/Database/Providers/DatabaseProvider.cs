@@ -2,17 +2,11 @@ using System;
 using System.Data;
 using System.Threading.Tasks;
 using Dapper;
+using Data.Database.Abstractions;
 using Data.DBCommands;
 using Microsoft.Data.SqlClient;
 
 namespace Data.DBProvider;
-
-public interface IDatabaseProvider
-{
-    Task InitializeDatabaseAsync();
-    Task ResetDatabaseAsync();
-    Task<IDbConnection> CreateConnectionAsync();
-}
 
 public class SqlServerDatabaseProvider : IDatabaseProvider
 {
