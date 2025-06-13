@@ -23,7 +23,7 @@ public class DatabaseCommandProvider
                     Name NVARCHAR(100) NOT NULL,
                     Description NVARCHAR(MAX),
                     Price DECIMAL(18,2) NOT NULL,
-                    ImageUrl NVARCHAR(255) NULL,
+                    ImageUrl NVARCHAR(MAX) NULL,
                     CategoryId INT NOT NULL,
                     Quantity INT NOT NULL DEFAULT 0,
                     CreatedAt DATETIME2 DEFAULT GETDATE(),
