@@ -25,6 +25,14 @@ public class CartRepositoryImpl : CartRepository
         return await connection.QueryAsync<Cart>(_commandProvider.GetCartItems());
     }
 
+    public override async Task<IEnumerable<Cart>> GetCartItemsByUserIdAsync(string userId)
+    {
+        using var connection = await _databaseProvider.CreateConnectionAsync();
+        var parameters = new DynamicParameters();
+        parameters.Add("@UserId", userId);
+        return await connection.QueryAsync<Cart>(_commandProvider.GetCartItemByUserId(), parameters);
+    }
+
     public override async Task AddItemToCartAsync(Cart cart)
     {
         using var connection = await _databaseProvider.CreateConnectionAsync();
@@ -54,16 +62,17 @@ public class CartRepositoryImpl : CartRepository
         using var connection_db = await _databaseProvider.CreateConnectionAsync();
 
         var connection = (SqlConnection)connection_db;
-        
-        using var transaction = await connection.BeginTransactionAsync(IsolationLevel.Serializable, CancellationToken.None);
-        
+
+        using var transaction =
+            await connection.BeginTransactionAsync(IsolationLevel.Serializable, CancellationToken.None);
+
         try
         {
             var available = await connection.QueryFirstOrDefaultAsync<int>(
                 "SELECT Quantity FROM Products WHERE Id = @productId",
                 new { productId },
                 transaction);
-            
+
             var inCart = await connection.QueryFirstOrDefaultAsync<int>(
                 "SELECT Quantity FROM Cart WHERE ProductId = @productId",
                 new { productId },

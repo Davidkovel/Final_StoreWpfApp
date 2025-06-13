@@ -61,7 +61,7 @@ public partial class DetailViewModel : ObservableObject
         var currentUser = _authService.GetCurrentUser();
         if (currentUser == null) return;
 
-        bool hasLocalComment = Comments.Any(c => c.UserId == currentUser.Id);
+        bool hasLocalComment = Comments.Any(c => c.UserId == currentUser.Result.Id);
         if (hasLocalComment)
         {
             MessageBox.Show("You already have a comment for this product");
@@ -80,7 +80,7 @@ public partial class DetailViewModel : ObservableObject
         var comment = new Comment
         {
             ProductId = SelectedProduct.Id,
-            UserId = currentUser.Id,
+            UserId = currentUser.Result.Id,
             Text = NewCommentText,
         };
 
@@ -112,7 +112,7 @@ public partial class DetailViewModel : ObservableObject
             return;
         }
 
-        int userId = (int)user?.Id;
+        string userId = user.Result.Id;
 
         _cartService.AddItemToCart(_selectedProduct, userId, 1);
 

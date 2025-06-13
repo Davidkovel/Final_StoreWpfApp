@@ -25,11 +25,12 @@ public class CommentService(CommentRepository commentRepository)
             await commentRepository.AddCommentAsync(comment);
             return true;
         }
-        catch
+        catch (Exception ex)
         {
-            MessageBox.Show("Failed to add comment");
+            MessageBox.Show($"Failed to add comment {ex.Message}");
             return false;
         }
+        
     }
 
     public async Task<bool> CheckIfUserHasComment(int userId, int productId)

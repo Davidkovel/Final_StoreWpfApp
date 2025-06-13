@@ -18,7 +18,23 @@ public class CartCommandProvider : ICartSqlCommandProvider
         INNER JOIN Products p ON c.ProductId = p.Id
         ORDER BY 
             c.ProductId;";
+
+    public string GetCartItemByUserId() => @"
+        SELECT
+            c.Id,
+            c.ProductId,
+            c.Quantity,
+            p.Name AS ProductName,
+            p.Price AS ProductPrice,
+            p.ImageUrl as ProductImageUrl
+        FROM Cart c
+        INNER JOIN Products p ON c.ProductId = p.Id
+        WHERE UserId = @UserId
+        ORDER BY
+            c.ProductId;
+        ";
     
+
     public string AddItemToCart() => @"
         INSERT INTO Cart (ProductId, UserId, Quantity)
         VALUES (@ProductId, @UserId, @Quantity);";

@@ -106,7 +106,8 @@ public partial class App : Application
         serviceLocator.AddSingleton<CartViewModel>(sp => new CartViewModel(
             logger: sp.GetRequiredService<ILogger<CartViewModel>>(),
             navigationService: sp.GetRequiredService<NavigationService>(),
-            cartService: sp.GetRequiredService<CartService>()
+            cartService: sp.GetRequiredService<CartService>(),
+            authService: sp.GetRequiredService<AuthService>()
         ));
 
         serviceLocator.AddSingleton<AuthViewModel>(sp => new AuthViewModel(

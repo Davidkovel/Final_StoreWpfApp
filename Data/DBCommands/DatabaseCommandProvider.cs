@@ -56,7 +56,7 @@ public class DatabaseCommandProvider
                 CREATE TABLE Cart (
                     Id INT PRIMARY KEY IDENTITY(1,1),
                     ProductId INT NOT NULL,
-                    UserId INT NOT NULL,
+                    UserId NVARCHAR(MAX) NOT NULL,
                     Quantity INT NOT NULL DEFAULT 1,
                     CONSTRAINT FK_Cart_Products FOREIGN KEY (ProductId) REFERENCES Products(Id)
                 );
@@ -69,7 +69,7 @@ public class DatabaseCommandProvider
             BEGIN
                 CREATE TABLE Comments (
                     Id INT PRIMARY KEY IDENTITY(1,1),
-                    UserId INT NOT NULL,
+                    UserId NVARCHAR(MAX) NOT NULL,
                     ProductId INT NOT NULL,
                     Text NVARCHAR(MAX) NOT NULL,
                     Rating INT NULL CHECK (Rating BETWEEN 1 AND 5),
@@ -82,16 +82,31 @@ public class DatabaseCommandProvider
         ";
 
     public static string DropTablesCommand() => @"
-            IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Products')
-            BEGIN
-                DROP TABLE Products;
-                PRINT 'Table Products dropped successfully.';
-            END
-            
-            IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Categories')
-            BEGIN
-                DROP TABLE Categories;
-                PRINT 'Table Categories dropped successfully.';
-            END
-        ";
+        EXEC sp_MSforeachtable 'ALTER TABLE ? NOCHECK CONSTRAINT ALL';
+
+        IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Comments')
+        BEGIN
+            DROP TABLE Comments;
+            PRINT 'Table Comments dropped successfully.';
+        END
+
+        IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Cart')
+        BEGIN
+            DROP TABLE Cart;
+            PRINT 'Table Cart dropped successfully.';
+        END
+
+        IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Products')
+        BEGIN
+            DROP TABLE Products;
+            PRINT 'Table Products dropped successfully.';
+        END
+
+        IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Categories')
+        BEGIN
+            DROP TABLE Categories;
+            PRINT 'Table Categories dropped successfully.';
+        END
+
+    ";
 }
