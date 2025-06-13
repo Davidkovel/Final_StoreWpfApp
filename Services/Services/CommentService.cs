@@ -12,7 +12,7 @@ public class CommentService(CommentRepository commentRepository)
         return comments;
     }
 
-    public async Task<IEnumerable<Comment>> GetCommentByUserId(int userId, int productId)
+    public async Task<IEnumerable<Comment>> GetCommentByUserId(string userId, int productId)
     {
         var comments = await commentRepository.GetCommentByUserIdAsync(userId, productId: productId);
         return comments;
@@ -27,13 +27,12 @@ public class CommentService(CommentRepository commentRepository)
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Failed to add comment {ex.Message}");
             return false;
         }
         
     }
 
-    public async Task<bool> CheckIfUserHasComment(int userId, int productId)
+    public async Task<bool> CheckIfUserHasComment(string userId, int productId)
     {
         try
         {
@@ -42,7 +41,6 @@ public class CommentService(CommentRepository commentRepository)
         }
         catch
         {
-            MessageBox.Show("Failed to check user comments");
             return false;
         }
     }

@@ -9,19 +9,18 @@ namespace DekstopApp.ViewModels;
 
 public partial class AuthViewModel : ObservableObject
 {
+    private readonly ILogger<AuthViewModel> _logger;
+    private readonly AuthService _authService;
+    
     [ObservableProperty] protected string email = string.Empty;
     [ObservableProperty] protected string password = String.Empty;
     [ObservableProperty] private bool _isLoggedIn = false;
-
-    private readonly ILogger<AuthViewModel> _logger;
-    private readonly AuthService _authService;
 
     public AuthViewModel(ILogger<AuthViewModel> logger, AuthService authService)
     {
         _logger = logger;
         _authService = authService;
     }
-
 
     public async Task<User?> GetCurrentUser()
     {
@@ -43,7 +42,7 @@ public partial class AuthViewModel : ObservableObject
             var user = await _authService.Login(emailFromUser, passwordFromUser);
             _isLoggedIn = user != null;
             Console.WriteLine(_isLoggedIn);
-            
+
             if (user == null)
             {
                 _logger.LogWarning("Login failed for user {Email}", email);
@@ -68,7 +67,7 @@ public partial class AuthViewModel : ObservableObject
             var user = await _authService.Register(emailFromUser, passwordFromUser);
             _isLoggedIn = user != null;
             Console.WriteLine(_isLoggedIn);
-            
+
             if (user == null)
             {
                 _logger.LogWarning("Registration failed for user {Email}", email);

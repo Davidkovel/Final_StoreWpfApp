@@ -26,7 +26,7 @@ public class CommentRepositoryImpl : CommentRepository
         return await connection.QueryAsync<Comment>(_commentCommandProvider.GetCommentsByProductId(), parameters);
     }
 
-    public override async Task<IEnumerable<Comment>> GetCommentByUserIdAsync(int userId, int productId)
+    public override async Task<IEnumerable<Comment>> GetCommentByUserIdAsync(string userId, int productId)
     {
         using var connection = await _databaseProvider.CreateConnectionAsync();
         var parameters = new DynamicParameters();

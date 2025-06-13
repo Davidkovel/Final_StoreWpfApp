@@ -16,6 +16,7 @@ using DekstopApp.ViewModels;
 using DekstopApp.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Services;
 
 namespace DekstopApp;
 
@@ -87,6 +88,7 @@ public partial class App : Application
         serviceLocator.AddSingleton<CartService>();
         serviceLocator.AddSingleton<AuthService>();
         serviceLocator.AddSingleton<CommentService>();
+        serviceLocator.AddSingleton<IDialogService, DialogService>();
 
         // Register ViewModels
         serviceLocator.AddSingleton<HomeViewModel>(sp => new HomeViewModel(
@@ -100,7 +102,8 @@ public partial class App : Application
             navigationService: sp.GetRequiredService<NavigationService>(),
             cartService: sp.GetRequiredService<CartService>(),
             authService: sp.GetRequiredService<AuthService>(),
-            commentService: sp.GetRequiredService<CommentService>()
+            commentService: sp.GetRequiredService<CommentService>(),
+            dialogService: sp.GetRequiredService<IDialogService>()
         ));
 
         serviceLocator.AddSingleton<CartViewModel>(sp => new CartViewModel(

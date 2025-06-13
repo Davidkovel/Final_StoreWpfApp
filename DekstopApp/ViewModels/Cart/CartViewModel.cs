@@ -42,6 +42,53 @@ public partial class CartViewModel : ObservableObject, IRecipient<CartUpdatedMes
 
     public IAsyncRelayCommand LoadCartItemsCommand;
 
+    [RelayCommand]
+    private async Task DeleteCartItem(int ProductId)
+    {
+        try
+        {
+            Console.WriteLine("Deleting cart item...");
+            await DeleteCartItemAsync(ProductId);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            throw;
+        }
+    }
+
+    [RelayCommand]
+    private async Task ClearCartItems()
+    {
+        try
+        {
+            await ClearCartItemsAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            throw;
+        }
+    }
+
+    private async Task ClearCartItemsAsync()
+    {
+        _cartService.ClearCart();
+        CartItems.Clear();
+    }
+
+    private async Task DeleteCartItemAsync(int ProductId)
+    {
+        _cartService.DeleteItemFromCart(ProductId);
+        var cartItemToRemove = CartItems.FirstOrDefault(item => item.ProductId == ProductId);
+        Console.WriteLine(cartItemToRemove);
+        if (cartItemToRemove != null)
+        {
+            CartItems.Remove(cartItemToRemove);
+        }
+    }
+
+
     private async Task LoadCartItems()
     {
         try
@@ -76,42 +123,6 @@ public partial class CartViewModel : ObservableObject, IRecipient<CartUpdatedMes
     private void UpdateTotal()
     {
         Total = CartItems.Sum(item => item.ItemTotal);
-    }
-
-    [RelayCommand]
-    private void DeleteCartItem(int ProductId)
-    {
-        try
-        {
-            Console.WriteLine("Deleting cart item...");
-            _cartService.DeleteItemFromCart(ProductId);
-            var cartItemToRemove = CartItems.FirstOrDefault(item => item.ProductId == ProductId);
-            Console.WriteLine(cartItemToRemove);
-            if (cartItemToRemove != null)
-            {
-                CartItems.Remove(cartItemToRemove);
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-            throw;
-        }
-    }
-
-    [RelayCommand]
-    private void ClearCartItems()
-    {
-        try
-        {
-            _cartService.ClearCart();
-            CartItems.Clear();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-            throw;
-        }
     }
 
     public async void Receive(CartUpdatedMessage message)

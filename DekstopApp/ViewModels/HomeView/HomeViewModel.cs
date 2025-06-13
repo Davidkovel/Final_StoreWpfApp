@@ -47,6 +47,15 @@ public partial class HomeViewModel : ObservableObject
     public IAsyncRelayCommand LoadCategoryCommand { get; }
     public IRelayCommand<ProductModel> ViewProductDetailCommand => new RelayCommand<ProductModel>(ViewProductDetail);
 
+
+    [RelayCommand]
+    private async Task FilterByCategory(int? categoryId)
+    {
+        SelectedCategoryId = categoryId;
+        await LoadProducts();
+    }
+
+
     private async Task LoadProducts()
     {
         try
@@ -75,6 +84,8 @@ public partial class HomeViewModel : ObservableObject
         }
     }
 
+    
+    
     private async Task LoadCategories()
     {
         try
@@ -100,12 +111,5 @@ public partial class HomeViewModel : ObservableObject
         {
             _navigationService.NavigateTo<DetailViewPage, DetailViewModel>(vm => vm.SelectedProduct = product);
         }
-    }
-
-    [RelayCommand]
-    private async Task FilterByCategory(int? categoryId)
-    {
-        SelectedCategoryId = categoryId;
-        await LoadProducts();
     }
 }

@@ -25,7 +25,7 @@ public class CartService(CartRepository cartRepository) : INotifyPropertyChanged
     }
 
     
-    public async void AddItemToCart(ProductModel product, string userId, int quantity=1)
+    public async Task AddItemToCart(ProductModel product, string userId, int quantity=1)
     {
         var cart = new Cart
         {
