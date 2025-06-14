@@ -6,6 +6,7 @@ using Core.Repository;
 using Data.Abstractions.Database;
 using Data.Abstractions.NoSqlDatabase;
 using Data.Database.Abstractions;
+using Data.Database.Providers;
 using Data.DBCommands;
 using Data.DBProvider;
 using Data.DBProvider.SupabaseRemote;
@@ -62,6 +63,13 @@ public partial class App : Application
         serviceLocator.AddSingleton<IDatabaseProvider>(_ =>
             new SqlServerDatabaseProvider(connectionString));
 
+        serviceLocator.AddSingleton<IConnectionFactory>(provider =>
+        {
+            var dbProvider = provider.GetRequiredService<IDatabaseProvider>();
+            return new SqlConnectionFactory(
+                connectionString, dbProvider.InitializationTask);
+        });
+        
         serviceLocator.AddSingleton<ISupabaseRemoteProvider>(_ =>
             new SupabaseRemoteProvider(supabaseApiKey, supabaseEndpoint));
 

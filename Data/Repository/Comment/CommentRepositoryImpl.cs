@@ -10,18 +10,18 @@ namespace Data.Repository;
 
 public class CommentRepositoryImpl : CommentRepository
 {
-    private readonly IDatabaseProvider _databaseProvider;
+    private readonly IConnectionFactory _connectionFactory;
     private readonly ICommentSqlCommandProvider _commentCommandProvider;
 
-    public CommentRepositoryImpl(IDatabaseProvider databaseProvider, ICommentSqlCommandProvider commandProvider)
+    public CommentRepositoryImpl(IConnectionFactory connectionFactory, ICommentSqlCommandProvider commandProvider)
     {
-        _databaseProvider = databaseProvider;
+        _connectionFactory = connectionFactory;
         _commentCommandProvider = commandProvider;
     }
 
     public override async Task<IEnumerable<Comment>> GetCommentsByProductIdAsync(int productId)
     {
-        using var connection = await _databaseProvider.CreateConnectionAsync();
+        using var connection = await _connectionFactory.CreateConnectionAsync();
         var parameters = new DynamicParameters();
         parameters.Add("ProductId", productId);
         return await connection.QueryAsync<Comment>(_commentCommandProvider.GetCommentsByProductId(), parameters);
@@ -29,7 +29,7 @@ public class CommentRepositoryImpl : CommentRepository
 
     public override async Task<IEnumerable<Comment>> GetCommentByUserIdAsync(string userId, int productId)
     {
-        using var connection = await _databaseProvider.CreateConnectionAsync();
+        using var connection = await _connectionFactory.CreateConnectionAsync();
         var parameters = new DynamicParameters();
         parameters.Add("UserId", userId);
         parameters.Add("ProductId", productId);
@@ -39,7 +39,7 @@ public class CommentRepositoryImpl : CommentRepository
 
     public override async Task AddCommentAsync(Comment comment)
     {
-        using var connection = await _databaseProvider.CreateConnectionAsync();
+        using var connection = await _connectionFactory.CreateConnectionAsync();
         var parameters = new DynamicParameters();
         parameters.Add("UserId", comment.UserId);
         parameters.Add("Text", comment.Text);

@@ -11,24 +11,24 @@ namespace Data.Repository;
 
 public class CartRepositoryImpl : CartRepository
 {
-    private readonly IDatabaseProvider _databaseProvider;
+    private readonly IConnectionFactory _connectionFactory;
     private ICartSqlCommandProvider _commandProvider;
 
-    public CartRepositoryImpl(IDatabaseProvider databaseProvider, ICartSqlCommandProvider commandProvider)
+    public CartRepositoryImpl(IConnectionFactory connectionFactory, ICartSqlCommandProvider commandProvider)
     {
-        _databaseProvider = databaseProvider;
+        _connectionFactory = connectionFactory;
         _commandProvider = commandProvider;
     }
 
     public override async Task<IEnumerable<Cart>> GetCartItemsAsync()
     {
-        using var connection = await _databaseProvider.CreateConnectionAsync();
+        using var connection = await _connectionFactory.CreateConnectionAsync();
         return await connection.QueryAsync<Cart>(_commandProvider.GetCartItems());
     }
 
     public override async Task<IEnumerable<Cart>> GetCartItemsByUserIdAsync(string userId)
     {
-        using var connection = await _databaseProvider.CreateConnectionAsync();
+        using var connection = await _connectionFactory.CreateConnectionAsync();
         var parameters = new DynamicParameters();
         parameters.Add("@UserId", userId);
         return await connection.QueryAsync<Cart>(_commandProvider.GetCartItemByUserId(), parameters);
@@ -36,7 +36,7 @@ public class CartRepositoryImpl : CartRepository
 
     public override async Task AddItemToCartAsync(Cart cart)
     {
-        using var connection = await _databaseProvider.CreateConnectionAsync();
+        using var connection = await _connectionFactory.CreateConnectionAsync();
         var parameters = new DynamicParameters();
         parameters.Add("ProductId", cart.ProductId);
         parameters.Add("UserId", cart.UserId);
@@ -46,7 +46,7 @@ public class CartRepositoryImpl : CartRepository
 
     public override async Task DeleteItemFromCartAsync(int productId)
     {
-        using var connection = await _databaseProvider.CreateConnectionAsync();
+        using var connection = await _connectionFactory.CreateConnectionAsync();
         var parameters = new DynamicParameters();
         parameters.Add("ProductId", productId);
         await connection.ExecuteAsync(_commandProvider.DeleteItemFromCart(), parameters);
@@ -54,13 +54,13 @@ public class CartRepositoryImpl : CartRepository
 
     public override async Task ClearCartAsync()
     {
-        using var connection = await _databaseProvider.CreateConnectionAsync();
+        using var connection = await _connectionFactory.CreateConnectionAsync();
         await connection.ExecuteAsync(_commandProvider.ClearCart());
     }
 
     public override async Task<bool> UpdateCartItemQuantity(int productId, int change)
     {
-        using var connection_db = await _databaseProvider.CreateConnectionAsync();
+        using var connection_db = await _connectionFactory.CreateConnectionAsync();
 
         var connection = (SqlConnection)connection_db;
 

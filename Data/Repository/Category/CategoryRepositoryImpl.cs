@@ -12,24 +12,24 @@ namespace Data.Repository;
 
 public class CategoryRepositoryImpl : CategoryRepository
 {
-    private readonly IDatabaseProvider _databaseProvider;
+    private readonly IConnectionFactory _connectionFactory;
     private readonly ICategorySqlCommandProvider _commandProvider;
 
-    public CategoryRepositoryImpl(IDatabaseProvider databaseProvider, ICategorySqlCommandProvider commandProvider)
+    public CategoryRepositoryImpl(IConnectionFactory connectionFactory, ICategorySqlCommandProvider commandProvider)
     {
-        _databaseProvider = databaseProvider;
+        _connectionFactory = connectionFactory;
         _commandProvider = commandProvider;
     }
 
     public override async Task<IEnumerable<Category>> GetCategoriesAsync()
     {
-        using var connection = await _databaseProvider.CreateConnectionAsync();
+        using var connection = await _connectionFactory.CreateConnectionAsync();
         return await connection.QueryAsync<Category>(_commandProvider.GetCategories());
     }
 
     public override async Task AddCategoryAsync(Category category)
     {
-        using var connection = await _databaseProvider.CreateConnectionAsync();
+        using var connection = await _connectionFactory.CreateConnectionAsync();
         await connection.ExecuteAsync(
             @"INSERT INTO Categories 
               (Name, Description) 

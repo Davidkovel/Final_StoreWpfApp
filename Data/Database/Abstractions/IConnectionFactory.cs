@@ -1,6 +1,8 @@
+using System.Data;
+
 namespace Data.Database.Abstractions;
 
-public class IConnectionFactory
+public interface IConnectionFactory
 {
-    
+    Task<IDbConnection> CreateConnectionAsync();
 }

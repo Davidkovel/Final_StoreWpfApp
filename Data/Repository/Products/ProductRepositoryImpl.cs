@@ -12,30 +12,30 @@ namespace Data.Repository;
 
 public class ProductRepositoryImpl : ProductRepository
 {
-    private readonly IDatabaseProvider _databaseProvider;
+    private readonly IConnectionFactory _connectionFactory;
     private readonly IProductSqlCommandProvider _commandProvider;
 
-    public ProductRepositoryImpl(IDatabaseProvider databaseProvider, IProductSqlCommandProvider commandProvider)
+    public ProductRepositoryImpl(IConnectionFactory connectionFactory, IProductSqlCommandProvider commandProvider)
     {
-        _databaseProvider = databaseProvider;
+        _connectionFactory = connectionFactory;
         _commandProvider = commandProvider;
     }
 
     public override async Task<IEnumerable<Product>> GetProductsAsync()
     {
-        using var connection = await _databaseProvider.CreateConnectionAsync();
+        using var connection = await _connectionFactory.CreateConnectionAsync();
         return await connection.QueryAsync<Product>(_commandProvider.GetProducts());
     }
 
     public override async Task<IEnumerable<Product>> GetProductsByCategoryIdAsync(int categoryId)
     {
-        using var connection = await _databaseProvider.CreateConnectionAsync();
+        using var connection = await _connectionFactory.CreateConnectionAsync();
         return await connection.QueryAsync<Product>(_commandProvider.GetProductsByCategory(categoryId));
     }
 
     public override async Task<Product> GetProductByIdAsync(int id)
     {
-        using var connection = await _databaseProvider.CreateConnectionAsync();
+        using var connection = await _connectionFactory.CreateConnectionAsync();
         return await connection.QueryFirstOrDefaultAsync<Product>(
             "SELECT * FROM Products WHERE Id = @Id",
             new { Id = id });
@@ -45,7 +45,7 @@ public class ProductRepositoryImpl : ProductRepository
 
     public override async Task AddProductAsync(Product product)
     {
-        using var connection = await _databaseProvider.CreateConnectionAsync();
+        using var connection = await _connectionFactory.CreateConnectionAsync();
         await connection.ExecuteAsync(
             @"INSERT INTO Products 
               (Name, Description, Price, ImageUrl, CategoryId, Quantity) 
@@ -55,7 +55,7 @@ public class ProductRepositoryImpl : ProductRepository
 
     public override async Task UpdateProductAsync(Product product)
     {
-        using var connection = await _databaseProvider.CreateConnectionAsync();
+        using var connection = await _connectionFactory.CreateConnectionAsync();
         await connection.ExecuteAsync(
             @"UPDATE Products SET 
               Name = @Name, 
@@ -71,7 +71,7 @@ public class ProductRepositoryImpl : ProductRepository
 
     public override async Task DeleteProductAsync(int id)
     {
-        using var connection = await _databaseProvider.CreateConnectionAsync();
+        using var connection = await _connectionFactory.CreateConnectionAsync();
         await connection.ExecuteAsync(
             "DELETE FROM Products WHERE Id = @Id",
             new { Id = id });

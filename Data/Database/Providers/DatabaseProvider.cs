@@ -11,15 +11,14 @@ namespace Data.DBProvider;
 public class SqlServerDatabaseProvider : IDatabaseProvider
 {
     private readonly string _connectionString;
-    private readonly Task _initializationTask;
+    public Task InitializationTask { get; }
 
     public SqlServerDatabaseProvider(string connectionString)
     {
         _connectionString = connectionString;
-        _initializationTask = InitializeDatabaseAsync();
+        InitializationTask = InitializeDatabaseAsync();
     }
 
-    public Task initializationTask => _initializationTask;
 
     public async Task InitializeDatabaseAsync()
     {
@@ -70,8 +69,8 @@ public class SqlServerDatabaseProvider : IDatabaseProvider
 
     public async Task<IDbConnection> CreateConnectionAsync()
     {
-        await initializationTask;
-        
+        await InitializationTask;
+
         var connection = new SqlConnection(_connectionString);
         await connection.OpenAsync();
         return connection;
