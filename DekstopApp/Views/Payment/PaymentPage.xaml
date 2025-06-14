@@ -1,0 +1,29 @@
+<Window x:Class="DekstopApp.Views.Payment.PaymentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Выберите способ оплаты"
+        Height="300"
+        Width="400"
+        WindowStartupLocation="CenterScreen">
+    <StackPanel Margin="20" HorizontalAlignment="Center">
+        <TextBlock Text="Выберите способ оплаты:"
+                   FontSize="16"
+                   Margin="0 0 0 20" />
+
+        <Button Content="Оплата через Monobank"
+                Padding="15 5"
+                Background="#4CAF50"
+                Foreground="White"
+                FontWeight="Bold"
+                Command="{Binding MonobankPaymentCommand}"
+                Margin="0 0 0 10"
+                IsEnabled="{Binding IsProcessing, Converter={StaticResource InverseBoolConverter}}" />
+
+        <Button Content="Оплата криптовалютой (Confirmo)"
+                Padding="15 5"
+                Background="#2196F3"
+                Foreground="White"
+                FontWeight="Bold"
+                />
+    </StackPanel>
+</Window>

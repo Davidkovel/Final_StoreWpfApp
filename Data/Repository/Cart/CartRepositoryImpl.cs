@@ -44,6 +44,15 @@ public class CartRepositoryImpl : CartRepository
         await connection.ExecuteAsync(_commandProvider.AddItemToCart(), parameters);
     }
 
+    public override async Task<bool> IsItemInCartAsync(int productId, string userId)
+    {
+        using var connection = await _connectionFactory.CreateConnectionAsync();
+        var parameters = new DynamicParameters();
+        parameters.Add("ProductId", productId);
+        parameters.Add("UserId", userId);
+        return await connection.ExecuteScalarAsync<bool>(_commandProvider.IsItemInCart(), parameters);
+    }
+
     public override async Task DeleteItemFromCartAsync(int productId)
     {
         using var connection = await _connectionFactory.CreateConnectionAsync();

@@ -41,6 +41,14 @@ public class CartService(CartRepository cartRepository) : INotifyPropertyChanged
         await cartRepository.AddItemToCartAsync(cart);
     }
     
+    public async Task<bool> IsItemInCart(int productId, string userId)
+    {
+        var isInCart = await cartRepository.IsItemInCartAsync(productId, userId);
+        return isInCart;
+    }
+    
+    
+    
     public async void DeleteItemFromCart(int productId)
     {
         await cartRepository.DeleteItemFromCartAsync(productId);

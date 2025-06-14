@@ -15,10 +15,13 @@ using Data.Repository;
 using DekstopApp.Mapping;
 using DekstopApp.Services;
 using DekstopApp.ViewModels;
+using DekstopApp.ViewModels.Payment;
 using DekstopApp.Views;
+using DekstopApp.Views.Payment;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Services;
+using Services.Features.Payment;
 
 namespace DekstopApp;
 
@@ -69,7 +72,7 @@ public partial class App : Application
             return new SqlConnectionFactory(
                 connectionString, dbProvider.InitializationTask);
         });
-        
+
         serviceLocator.AddSingleton<ISupabaseRemoteProvider>(_ =>
             new SupabaseRemoteProvider(supabaseApiKey, supabaseEndpoint));
 
@@ -97,6 +100,7 @@ public partial class App : Application
         serviceLocator.AddSingleton<CartService>();
         serviceLocator.AddSingleton<AuthService>();
         serviceLocator.AddSingleton<CommentService>();
+        serviceLocator.AddSingleton<MonobankService>();
         serviceLocator.AddSingleton<IDialogService, DialogService>();
 
         // Register ViewModels
@@ -127,6 +131,13 @@ public partial class App : Application
             authService: sp.GetRequiredService<AuthService>()
         ));
 
+        serviceLocator.AddSingleton<PaymentViewModel>(sp => new PaymentViewModel(
+            cartService: sp.GetRequiredService<CartService>(),
+            authService: sp.GetRequiredService<AuthService>(),
+            monobankService: sp.GetRequiredService<MonobankService>(),
+            dialogService: sp.GetRequiredService<DialogService>()
+        ));
+        
         // Register Views
         serviceLocator.AddSingleton<HomePage>(sp => new HomePage(
             navigationService: sp.GetRequiredService<NavigationService>(),
@@ -153,6 +164,10 @@ public partial class App : Application
         serviceLocator.AddSingleton<RegisterPage>(sp => new RegisterPage(
             navigationService: sp.GetRequiredService<NavigationService>(),
             authViewModel: sp.GetRequiredService<AuthViewModel>()
+        ));
+
+        serviceLocator.AddSingleton<PaymentWindow>(sp => new PaymentWindow(
+            viewModel: sp.GetRequiredService<PaymentViewModel>()
         ));
 
         // Register MainWindow

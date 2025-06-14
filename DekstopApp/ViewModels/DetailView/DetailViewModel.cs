@@ -67,87 +67,19 @@ public partial class DetailViewModel : ObservableObject
         if (await CheckExistingCommentsAsync(currentUser)) return;
 
         await SubmitNewCommentAsync(currentUser);
-        // if (SelectedProduct == null || string.IsNullOrWhiteSpace(NewCommentText))
-        // {
-        //     MessageBox.Show("Please enter comment text");
-        //     return;
-        // }
-        //
-        // if (!_authService.IsLoggedIn)
-        // {
-        //     MessageBox.Show("Please login to add comments");
-        //     _navigationService.NavigateTo<LoginPage, AuthViewModel>();
-        //     return;
-        // }
-        //
-        // var currentUser = _authService.GetCurrentUser();
-        // if (currentUser == null) return;
-        //
-        // bool hasLocalComment = Comments.Any(c => c.UserId == currentUser.Result.Id);
-        // if (hasLocalComment)
-        // {
-        //     MessageBox.Show("You already have a comment for this product");
-        //     CanAddComment = false;
-        //     return;
-        // }
-        //
-        // bool hasServerComment = await _commentService.CheckIfUserHasComment(currentUser.Id, SelectedProduct.Id);
-        // if (hasServerComment)
-        // {
-        //     MessageBox.Show("You already commented this product before");
-        //     CanAddComment = false;
-        //     return;
-        // }
-        //
-        // var comment = new Comment
-        // {
-        //     ProductId = SelectedProduct.Id,
-        //     UserId = currentUser.Result.Id,
-        //     Text = NewCommentText,
-        // };
-        //
-        // bool success = await _commentService.AddComment(comment);
-        // if (success)
-        // {
-        //     await LoadComments();
-        //     MessageBox.Show("Comment added successfully!");
-        // }
     }
 
     [RelayCommand]
     private async Task AddToCart()
     {
         if (SelectedProduct is null) return;
-        
+
         if (!await ValidateUserAuthenticationAsync()) return;
-        
+
         var currentUser = await GetCurrentUser();
         if (currentUser is null) return;
-        
+
         await ExecuteAddToCartAsync(currentUser);
-        // if (_selectedProduct == null) return;
-        //
-        // Console.WriteLine(!_authService.IsLoggedIn);
-        // if (!_authService.IsLoggedIn)
-        // {
-        //     _navigationService.NavigateTo<LoginPage, AuthViewModel>();
-        //     MessageBox.Show("You should log in then you can add product to cart");
-        //     return;
-        // }
-        //
-        // var user = _authService.GetCurrentUser();
-        // if (user == null)
-        // {
-        //     MessageBox.Show("User info not available. Please login in to your account or Sign Up.");
-        //     return;
-        // }
-        //
-        // string userId = user.Result.Id;
-        //
-        // _cartService.AddItemToCart(_selectedProduct, userId, 1);
-        //
-        // Console.WriteLine("Product added to cart: " + _selectedProduct.Name);
-        // WeakReferenceMessenger.Default.Send(new CartUpdatedMessage());
     }
 
     [RelayCommand]
@@ -231,6 +163,12 @@ public partial class DetailViewModel : ObservableObject
     {
         try
         {
+            if (await _cartService.IsItemInCart(SelectedProduct!.Id, user.Id))
+            {
+                _dialogService.ShowMessage($"{SelectedProduct!.Name} is already in your cart");
+                return;
+            }
+
             await _cartService.AddItemToCart(SelectedProduct!, user.Id, 1);
             WeakReferenceMessenger.Default.Send(new CartUpdatedMessage());
             _dialogService.ShowMessage($"{SelectedProduct!.Name} added to cart");

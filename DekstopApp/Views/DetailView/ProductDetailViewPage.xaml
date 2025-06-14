@@ -6,29 +6,29 @@
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="800">
 
-    <Grid Background="#F5F5F5">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />  <!-- Back Button -->
-            <RowDefinition Height="*" />     <!-- Product Details -->
-            <RowDefinition Height="Auto" />  <!-- Comment Input -->
-            <RowDefinition Height="Auto" />  <!-- Add Comment Button -->
-            <RowDefinition Height="*" />     <!-- Comments List -->
-            <RowDefinition Height="Auto" />  <!-- Add to Cart Button -->
+    <ScrollViewer>
+        <Grid Background="#F5F5F5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />  <!-- Back Button -->
+                <RowDefinition Height="*" />     <!-- Product Details -->
+                <RowDefinition Height="Auto" />  <!-- Comment Input -->
+                <RowDefinition Height="Auto" />  <!-- Add Comment Button -->
+                <RowDefinition Height="*" />     <!-- Comments List -->
+                <RowDefinition Height="Auto" />  <!-- Add to Cart Button -->
 
-        </Grid.RowDefinitions>
+            </Grid.RowDefinitions>
 
-        <!-- Back Button -->
-        <Button Grid.Row="0"
-                Content="← Назад"
-                HorizontalAlignment="Left"
-                Background="Black"
-                Foreground="White"
-                Margin="10"
-                Click="OnGoBackNavigationClick" />
+            <!-- Back Button -->
+            <Button Grid.Row="0"
+                    Content="← Назад"
+                    HorizontalAlignment="Left"
+                    Background="Black"
+                    Foreground="White"
+                    Margin="10"
+                    Click="OnGoBackNavigationClick" />
 
-        <!-- Product Detail Content -->
-        <ScrollViewer Grid.Row="1" Padding="20">
-            <Grid>
+            <!-- Product Detail Content -->
+            <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
@@ -112,49 +112,49 @@
                     </StackPanel>
                 </StackPanel>
             </Grid>
-        </ScrollViewer>
 
-        <TextBox Grid.Row="2" Text="{Binding NewCommentText}" />
+            <TextBox Grid.Row="2" Text="{Binding NewCommentText}" />
 
-        <Button Grid.Row="3" Command="{Binding AddCommentCommand}"
-                CommandParameter="{Binding NewCommentText}"
-                Content="Add Comment" />
+            <Button Grid.Row="3" Command="{Binding AddCommentCommand}"
+                    CommandParameter="{Binding NewCommentText}"
+                    Content="Add Comment" />
 
 
-        <ScrollViewer Grid.Row="4"
-                      VerticalScrollBarVisibility="Auto"
-                      Margin="0 40 0 0">
-            <ItemsControl ItemsSource="{Binding Comments}"
-                          Margin="20 0">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderBrush="LightGray"
-                                BorderThickness="0 0 0 1"
-                                Padding="0 5"
-                                Margin="0 5">
-                            <StackPanel>
-                                <TextBlock Text="{Binding Text}"
-                                           TextWrapping="Wrap"
-                                           FontSize="14" />
-                                <TextBlock Text="{Binding CreatedAt, StringFormat='Добавлено: {0:dd.MM.yyyy HH:mm}'}"
-                                           FontSize="12"
-                                           Foreground="Gray" />
-                            </StackPanel>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+            <ScrollViewer Grid.Row="4"
+                          VerticalScrollBarVisibility="Auto"
+                          Margin="0 40 0 0">
+                <ItemsControl ItemsSource="{Binding Comments}"
+                              Margin="20 0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="LightGray"
+                                    BorderThickness="0 0 0 1"
+                                    Padding="0 5"
+                                    Margin="0 5">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Text}"
+                                               TextWrapping="Wrap"
+                                               FontSize="14" />
+                                    <TextBlock Text="{Binding CreatedAt, StringFormat='Добавлено: {0:dd.MM.yyyy HH:mm}'}"
+                                               FontSize="12"
+                                               Foreground="Gray" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
 
-        <!-- Add to Cart Button -->
-        <Button Grid.Row="5"
-                Content="Добавить в корзину"
-                HorizontalAlignment="Stretch"
-                Margin="20"
-                Padding="15 5"
-                Background="Black"
-                Foreground="White"
-                FontSize="16"
-                Command="{Binding AddToCartCommand}" />
-    </Grid>
+            <!-- Add to Cart Button -->
+            <Button Grid.Row="5"
+                    Content="Добавить в корзину"
+                    HorizontalAlignment="Stretch"
+                    Margin="20"
+                    Padding="15 5"
+                    Background="Black"
+                    Foreground="White"
+                    FontSize="16"
+                    Command="{Binding AddToCartCommand}" />
+        </Grid>
+    </ScrollViewer>
 </UserControl>
