@@ -19,6 +19,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Data\Data.csproj" />
+      <ProjectReference Include="..\Services\Services.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -27,7 +28,27 @@
         <XamlRuntime>Wpf</XamlRuntime>
         <SubType>Designer</SubType>
       </Page>
-      <Page Update="Views\HomePage.xaml">
+      <Page Update="Views\Auth\LoginPage.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Views\Auth\RegisterPage.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Views\DetailView\ProductDetailViewPage.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Views\Cart\CartPage.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Views\HomeView\HomePage.xaml">
         <Generator>MSBuild:Compile</Generator>
         <XamlRuntime>Wpf</XamlRuntime>
         <SubType>Designer</SubType>
@@ -36,6 +57,7 @@
 
     <ItemGroup>
       <Folder Include="Resources\" />
+      <Folder Include="Views\ListView\" />
     </ItemGroup>
 
 </Project>
