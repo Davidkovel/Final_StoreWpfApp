@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DekstopApp", "DekstopApp\DekstopApp.csproj", "{427398C0-0656-473F-8A96-46048CB89635}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{C71AF1DE-CA53-44D6-A2CF-4A5B6A4E9959}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{427398C0-0656-473F-8A96-46048CB89635}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{427398C0-0656-473F-8A96-46048CB89635}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{427398C0-0656-473F-8A96-46048CB89635}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C71AF1DE-CA53-44D6-A2CF-4A5B6A4E9959}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C71AF1DE-CA53-44D6-A2CF-4A5B6A4E9959}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C71AF1DE-CA53-44D6-A2CF-4A5B6A4E9959}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C71AF1DE-CA53-44D6-A2CF-4A5B6A4E9959}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

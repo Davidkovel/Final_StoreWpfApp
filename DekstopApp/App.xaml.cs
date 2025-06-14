@@ -5,6 +5,8 @@ using System.Windows;
 using Core.Repository;
 using Data.Abstractions.Database;
 using Data.Abstractions.NoSqlDatabase;
+using Data.Database.Abstractions;
+using Data.Database.Providers;
 using Data.DBCommands;
 using Data.DBProvider;
 using Data.DBProvider.SupabaseRemote;
@@ -16,6 +18,7 @@ using DekstopApp.ViewModels;
 using DekstopApp.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Services;
 
 namespace DekstopApp;
 
@@ -60,6 +63,13 @@ public partial class App : Application
         serviceLocator.AddSingleton<IDatabaseProvider>(_ =>
             new SqlServerDatabaseProvider(connectionString));
 
+        serviceLocator.AddSingleton<IConnectionFactory>(provider =>
+        {
+            var dbProvider = provider.GetRequiredService<IDatabaseProvider>();
+            return new SqlConnectionFactory(
+                connectionString, dbProvider.InitializationTask);
+        });
+        
         serviceLocator.AddSingleton<ISupabaseRemoteProvider>(_ =>
             new SupabaseRemoteProvider(supabaseApiKey, supabaseEndpoint));
 
@@ -87,6 +97,7 @@ public partial class App : Application
         serviceLocator.AddSingleton<CartService>();
         serviceLocator.AddSingleton<AuthService>();
         serviceLocator.AddSingleton<CommentService>();
+        serviceLocator.AddSingleton<IDialogService, DialogService>();
 
         // Register ViewModels
         serviceLocator.AddSingleton<HomeViewModel>(sp => new HomeViewModel(
@@ -100,7 +111,8 @@ public partial class App : Application
             navigationService: sp.GetRequiredService<NavigationService>(),
             cartService: sp.GetRequiredService<CartService>(),
             authService: sp.GetRequiredService<AuthService>(),
-            commentService: sp.GetRequiredService<CommentService>()
+            commentService: sp.GetRequiredService<CommentService>(),
+            dialogService: sp.GetRequiredService<IDialogService>()
         ));
 
         serviceLocator.AddSingleton<CartViewModel>(sp => new CartViewModel(
