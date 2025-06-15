@@ -1,7 +1,4 @@
-﻿using System;
-using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
 using Core.Repository;
 using Data.Abstractions.Database;
 using Data.Abstractions.NoSqlDatabase;
@@ -26,7 +23,6 @@ namespace DekstopApp;
 /// Interaction logic for App.xaml
 /// </summary>
 ///
-// @Todo Исправить данный функционал с DI ригестрации
 public partial class App : Application
 {
     private IServiceProvider? _serviceProvider;
@@ -153,6 +149,10 @@ public partial class App : Application
         serviceLocator.AddSingleton<RegisterPage>(sp => new RegisterPage(
             navigationService: sp.GetRequiredService<NavigationService>(),
             authViewModel: sp.GetRequiredService<AuthViewModel>()
+        ));
+
+        serviceLocator.AddSingleton<AboutPage>(sp => new AboutPage(
+            navigationService: sp.GetRequiredKeyedService<NavigationService>(null)
         ));
 
         // Register MainWindow

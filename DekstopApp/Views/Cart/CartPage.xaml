@@ -43,7 +43,8 @@
                             Margin="10 0"
                             Style="{StaticResource MaterialDesignFlatButton}"
                             Foreground="Black"
-                            FontWeight="Bold" />
+                            FontWeight="Bold" 
+                            Click="OnGoAboutUsNavigationClick"/>
                 </StackPanel>
 
                 <!-- User Actions -->

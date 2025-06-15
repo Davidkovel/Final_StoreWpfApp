@@ -55,4 +55,9 @@ public partial class LoginPage : UserControl
         _authViewModel.Password = string.Empty;
         _navigationService.NavigateTo<RegisterPage, AuthViewModel>();
     }
+
+    private void OnGoBackNavigationClick(object sender, RoutedEventArgs e)
+    {
+        _navigationService.NavigateBack();
+    }
 }

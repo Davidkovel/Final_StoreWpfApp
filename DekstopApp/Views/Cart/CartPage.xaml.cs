@@ -8,6 +8,7 @@ namespace DekstopApp.Views;
 public partial class CartPage : UserControl
 {
     private readonly NavigationService _navigationService;
+
     public CartPage(NavigationService navigationService, CartViewModel viewModel)
     {
         InitializeComponent();
@@ -19,9 +20,14 @@ public partial class CartPage : UserControl
             viewModel.LoadCartItemsCommand.Execute(null);
         }
     }
-    
+
     private void OnGoHomePageNavigationClick(object sender, RoutedEventArgs e)
     {
         _navigationService.NavigateTo<HomePage, HomeViewModel>();
+    }
+
+    private void OnGoAboutUsNavigationClick(object sender, RoutedEventArgs e)
+    {
+        _navigationService.NavigateTo<AboutPage>();
     }
 }

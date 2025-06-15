@@ -7,7 +7,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:global="clr-namespace:"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="600" d:DesignWidth="1000">
     <Grid Background="#FFF5F5F5">
         <Border CornerRadius="10" Background="#FFF5F5F5"
                 Width="350" VerticalAlignment="Center" HorizontalAlignment="Center">

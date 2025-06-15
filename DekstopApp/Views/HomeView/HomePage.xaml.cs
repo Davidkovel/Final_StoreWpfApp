@@ -52,6 +52,11 @@ public partial class HomePage : UserControl
     {
         _navigationService.NavigateTo<LoginPage, AuthViewModel>();
     }
+
+    private void OnGoAboutUsNavigationClick(object sender, RoutedEventArgs e)
+    {
+        _navigationService.NavigateTo<AboutPage>();
+    }
 }
 
 
