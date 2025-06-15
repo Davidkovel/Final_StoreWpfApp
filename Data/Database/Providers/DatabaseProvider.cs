@@ -41,7 +41,9 @@ public class SqlServerDatabaseProvider : IDatabaseProvider
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Database initialization failed: {ex.Message}");
+            Console.WriteLine($"Database initialization failed: {ex}");
+            // Или так:
+            Console.WriteLine($"Full error: {ex.ToString()}");
             throw;
         }
     }
