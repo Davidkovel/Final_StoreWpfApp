@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using Core.Repository;
 using Data.Abstractions.Database;
 using Data.Abstractions.NoSqlDatabase;
@@ -11,10 +12,12 @@ using Data.Infrastructure.Caching;
 using Data.Repository;
 using DekstopApp.Mapping;
 using DekstopApp.Services;
+using DekstopApp.Utils;
 using DekstopApp.ViewModels;
 using DekstopApp.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Prometheus;
 using Services;
 
 namespace DekstopApp;
@@ -27,6 +30,8 @@ public partial class App : Application
 {
     private IServiceProvider? _serviceProvider;
 
+    private MetricServer _metricServer;
+
     protected override void OnStartup(StartupEventArgs e)
     {
         var config = ConfigLoader.LoadConfig();
@@ -35,9 +40,24 @@ public partial class App : Application
         var redisConnection = ConfigLoader.GetRedisConnectionString();
         var supabaseConnectionStrings = ConfigLoader.GetSupabaseConnectionStrings();
 
+        _metricServer = new MetricServer(
+            port: 5000
+            );
+        _metricServer.Start();
+
+        // C:\Windows\System32>netsh http add urlacl url=http://+:5000/metrics/ user=Все
+        //
+        // Резервирование URL-адрес добавлено успешно
+        //
+        //
+        // C:\Windows\System32>
+        
+
         string supabaseApiKey = supabaseConnectionStrings[0];
         string supabaseEndpoint = supabaseConnectionStrings[1];
 
+        StartMemoryUsageCollection();
+        
         var serviceCollection = new ServiceCollection();
         ConfigureServices(serviceCollection, connectionString, redisConnection, supabaseApiKey, supabaseEndpoint);
 
@@ -65,7 +85,7 @@ public partial class App : Application
             return new SqlConnectionFactory(
                 connectionString, dbProvider.InitializationTask);
         });
-        
+
         serviceLocator.AddSingleton<ISupabaseRemoteProvider>(_ =>
             new SupabaseRemoteProvider(supabaseApiKey, supabaseEndpoint));
 
@@ -162,5 +182,21 @@ public partial class App : Application
             var productService = sp.GetRequiredService<ProductService>();
             return new MainWindow(navigationService, productService);
         });
+    }
+
+    private void StartMemoryUsageCollection()
+    {
+        var timer = new Timer(_ => 
+        {
+            var process = Process.GetCurrentProcess();
+            AppMetrics.MemoryUsage.Set(process.WorkingSet64 / 1024 / 1024); // MB
+        }, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+    }
+    
+    protected override void OnExit(ExitEventArgs e)
+    {
+        _metricServer?.Stop();
+        _metricServer?.Dispose();
+        base.OnExit(e);
     }
 }
