@@ -1,0 +1,38 @@
+{
+  "title": "WPF App Dashboard",
+  "panels": [
+    {
+      "title": "Active Sessions",
+      "type": "stat",
+      "targets": [{"expr": "active_sessions"}],
+      "gridPos": {"x": 0, "y": 0, "w": 4, "h": 3},
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto"
+      }
+    },
+    {
+      "title": "Memory Usage",
+      "type": "gauge",
+      "targets": [{"expr": "memory_usage_mb"}],
+      "gridPos": {"x": 4, "y": 0, "w": 4, "h": 3},
+      "options": {
+        "min": 0,
+        "max": 1000,
+        "thresholds": {
+          "steps": [
+            {"color": "green", "value": null},
+            {"color": "red", "value": 800}
+          ]
+        }
+      }
+    }
+  ],
+  "templating": {
+    "list": [{
+      "name": "instance",
+      "query": "label_values(active_sessions, instance)"
+    }]
+  }
+}
