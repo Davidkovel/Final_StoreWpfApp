@@ -4,7 +4,7 @@ using Core.Repository;
 
 namespace DekstopApp.Services;
 
-public class CommentService(CommentRepository commentRepository)
+public class CommentService(CommentRepository commentRepository, IRatingRepository ratingRepository)
 {
     public async Task<IEnumerable<Comment>> GetCommentsByProductId(int productId)
     {
@@ -29,7 +29,6 @@ public class CommentService(CommentRepository commentRepository)
         {
             return false;
         }
-        
     }
 
     public async Task<bool> CheckIfUserHasComment(string userId, int productId)
@@ -38,6 +37,19 @@ public class CommentService(CommentRepository commentRepository)
         {
             var comments = await commentRepository.GetCommentByUserIdAsync(userId, productId);
             return comments?.Any() ?? false;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> CheckIfUserHasRating(string userId, int productId)
+    {
+        try
+        {
+            var ratings = await ratingRepository.GetRatingsByUserIdAsync(userId, productId);
+            return ratings?.Any() ?? false;
         }
         catch
         {

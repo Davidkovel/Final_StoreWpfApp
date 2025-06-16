@@ -4,12 +4,14 @@ using Core.Repository;
 using Data.Abstractions.Database;
 using Data.Abstractions.NoSqlDatabase;
 using Data.Database.Abstractions;
+using Data.Database.Commands.Rating;
 using Data.Database.Providers;
 using Data.DBCommands;
 using Data.DBProvider;
 using Data.DBProvider.SupabaseRemote;
 using Data.Infrastructure.Caching;
 using Data.Repository;
+using Data.Repository.Rating;
 using DekstopApp.Mapping;
 using DekstopApp.Services;
 using DekstopApp.Utils;
@@ -19,6 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Prometheus;
 using Services;
+using Services.Features.Rating;
 
 namespace DekstopApp;
 
@@ -94,6 +97,7 @@ public partial class App : Application
         serviceLocator.AddSingleton<ICategorySqlCommandProvider, CategoryCommandProvider>();
         serviceLocator.AddSingleton<ICartSqlCommandProvider, CartCommandProvider>();
         serviceLocator.AddSingleton<ICommentSqlCommandProvider, CommentCommandProvider>();
+        serviceLocator.AddSingleton<IRatingSqlCommandProvider, RatingCommandProvider>();
 
         // Infastructure
         serviceLocator.AddSingleton<ICacheProvider>(_ =>
@@ -105,6 +109,7 @@ public partial class App : Application
         serviceLocator.AddSingleton<CartRepository, CartRepositoryImpl>();
         serviceLocator.AddSingleton<IAuthRepository, AuthRepository>();
         serviceLocator.AddSingleton<CommentRepository, CommentRepositoryImpl>();
+        serviceLocator.AddSingleton<IRatingRepository, RatingRepositoryImpl>();
 
         // Register Services / Use Cases
         serviceLocator.AddSingleton<NavigationService>();
@@ -113,6 +118,7 @@ public partial class App : Application
         serviceLocator.AddSingleton<CartService>();
         serviceLocator.AddSingleton<AuthService>();
         serviceLocator.AddSingleton<CommentService>();
+        serviceLocator.AddSingleton<RatingService>();
         serviceLocator.AddSingleton<IDialogService, DialogService>();
 
         // Register ViewModels
@@ -128,6 +134,7 @@ public partial class App : Application
             cartService: sp.GetRequiredService<CartService>(),
             authService: sp.GetRequiredService<AuthService>(),
             commentService: sp.GetRequiredService<CommentService>(),
+            ratingService: sp.GetRequiredService<RatingService>(),
             dialogService: sp.GetRequiredService<IDialogService>()
         ));
 
@@ -172,7 +179,8 @@ public partial class App : Application
         ));
 
         serviceLocator.AddSingleton<AboutPage>(sp => new AboutPage(
-            navigationService: sp.GetRequiredKeyedService<NavigationService>(null)
+            navigationService: sp.GetRequiredKeyedService<NavigationService>(null),
+            authService: sp.GetRequiredService<AuthService>()
         ));
 
         // Register MainWindow

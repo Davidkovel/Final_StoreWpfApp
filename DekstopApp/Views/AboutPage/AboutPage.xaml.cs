@@ -8,12 +8,31 @@ namespace DekstopApp.Views;
 public partial class AboutPage : UserControl
 {
     private readonly NavigationService _navigationService;
+    private readonly AuthService _authService;
     
-    public AboutPage(NavigationService navigationService)
+    public AboutPage(NavigationService navigationService, AuthService authService)
     {
         InitializeComponent();
 
         _navigationService = navigationService;
+        _authService = authService;
+        
+        _authService.AuthStateChanged += UpdateAuthButtons;
+        UpdateAuthButtons();
+    }
+    
+    private void UpdateAuthButtons()
+    {
+        if (_authService.IsLoggedIn)
+        {
+            LoginButton.Visibility = Visibility.Collapsed;
+            ProfileButton.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            LoginButton.Visibility = Visibility.Visible;
+            ProfileButton.Visibility = Visibility.Collapsed;
+        }
     }
     
     private void OnGoCartPageNavigationClick(object sender, RoutedEventArgs e)
