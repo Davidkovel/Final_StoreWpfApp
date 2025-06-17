@@ -17,7 +17,7 @@ public partial class PaymentViewModel : ObservableObject
     private readonly CartService _cartService;
     private readonly AuthService _authService;
     private readonly MonobankService _monobankService;
-    private readonly DialogService _dialogService;
+    private readonly IDialogService _dialogService;
 
     [ObservableProperty] private bool _isProcessing;
     [ObservableProperty] private string _paymentUrl;
@@ -27,7 +27,7 @@ public partial class PaymentViewModel : ObservableObject
     private readonly string _successRedirectUrl = "https://example.com/success";
 
     public PaymentViewModel(CartService cartService, AuthService authService, MonobankService monobankService,
-        DialogService dialogService)
+        IDialogService dialogService)
     {
         _cartService = cartService;
         _authService = authService;

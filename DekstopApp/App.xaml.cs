@@ -1,27 +1,30 @@
-﻿using System;
-using System.Configuration;
-using System.Data;
+﻿using System.Diagnostics;
 using System.Windows;
 using Core.Repository;
 using Data.Abstractions.Database;
 using Data.Abstractions.NoSqlDatabase;
 using Data.Database.Abstractions;
+using Data.Database.Commands.Rating;
 using Data.Database.Providers;
 using Data.DBCommands;
 using Data.DBProvider;
 using Data.DBProvider.SupabaseRemote;
 using Data.Infrastructure.Caching;
 using Data.Repository;
+using Data.Repository.Rating;
 using DekstopApp.Mapping;
 using DekstopApp.Services;
+using DekstopApp.Utils;
 using DekstopApp.ViewModels;
 using DekstopApp.ViewModels.Payment;
 using DekstopApp.Views;
 using DekstopApp.Views.Payment;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Prometheus;
 using Services;
 using Services.Features.Payment;
+using Services.Features.Rating;
 
 namespace DekstopApp;
 
@@ -29,10 +32,11 @@ namespace DekstopApp;
 /// Interaction logic for App.xaml
 /// </summary>
 ///
-// @Todo Исправить данный функционал с DI ригестрации
 public partial class App : Application
 {
     private IServiceProvider? _serviceProvider;
+
+    private MetricServer _metricServer;
 
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -42,9 +46,24 @@ public partial class App : Application
         var redisConnection = ConfigLoader.GetRedisConnectionString();
         var supabaseConnectionStrings = ConfigLoader.GetSupabaseConnectionStrings();
 
+        _metricServer = new MetricServer(
+            port: 5000
+            );
+        _metricServer.Start();
+
+        // C:\Windows\System32>netsh http add urlacl url=http://+:5000/metrics/ user=Все
+        //
+        // Резервирование URL-адрес добавлено успешно
+        //
+        //
+        // C:\Windows\System32>
+        
+
         string supabaseApiKey = supabaseConnectionStrings[0];
         string supabaseEndpoint = supabaseConnectionStrings[1];
 
+        StartMemoryUsageCollection();
+        
         var serviceCollection = new ServiceCollection();
         ConfigureServices(serviceCollection, connectionString, redisConnection, supabaseApiKey, supabaseEndpoint);
 
@@ -81,6 +100,7 @@ public partial class App : Application
         serviceLocator.AddSingleton<ICategorySqlCommandProvider, CategoryCommandProvider>();
         serviceLocator.AddSingleton<ICartSqlCommandProvider, CartCommandProvider>();
         serviceLocator.AddSingleton<ICommentSqlCommandProvider, CommentCommandProvider>();
+        serviceLocator.AddSingleton<IRatingSqlCommandProvider, RatingCommandProvider>();
 
         // Infastructure
         serviceLocator.AddSingleton<ICacheProvider>(_ =>
@@ -92,6 +112,7 @@ public partial class App : Application
         serviceLocator.AddSingleton<CartRepository, CartRepositoryImpl>();
         serviceLocator.AddSingleton<IAuthRepository, AuthRepository>();
         serviceLocator.AddSingleton<CommentRepository, CommentRepositoryImpl>();
+        serviceLocator.AddSingleton<IRatingRepository, RatingRepositoryImpl>();
 
         // Register Services / Use Cases
         serviceLocator.AddSingleton<NavigationService>();
@@ -100,6 +121,7 @@ public partial class App : Application
         serviceLocator.AddSingleton<CartService>();
         serviceLocator.AddSingleton<AuthService>();
         serviceLocator.AddSingleton<CommentService>();
+        serviceLocator.AddSingleton<RatingService>();
         serviceLocator.AddSingleton<MonobankService>();
         serviceLocator.AddSingleton<IDialogService, DialogService>();
 
@@ -116,6 +138,7 @@ public partial class App : Application
             cartService: sp.GetRequiredService<CartService>(),
             authService: sp.GetRequiredService<AuthService>(),
             commentService: sp.GetRequiredService<CommentService>(),
+            ratingService: sp.GetRequiredService<RatingService>(),
             dialogService: sp.GetRequiredService<IDialogService>()
         ));
 
@@ -135,7 +158,7 @@ public partial class App : Application
             cartService: sp.GetRequiredService<CartService>(),
             authService: sp.GetRequiredService<AuthService>(),
             monobankService: sp.GetRequiredService<MonobankService>(),
-            dialogService: sp.GetRequiredService<DialogService>()
+            dialogService: sp.GetRequiredService<IDialogService>()
         ));
         
         // Register Views
@@ -166,6 +189,11 @@ public partial class App : Application
             authViewModel: sp.GetRequiredService<AuthViewModel>()
         ));
 
+        serviceLocator.AddSingleton<AboutPage>(sp => new AboutPage(
+            navigationService: sp.GetRequiredKeyedService<NavigationService>(null),
+            authService: sp.GetRequiredService<AuthService>()
+        ));
+        
         serviceLocator.AddSingleton<PaymentWindow>(sp => new PaymentWindow(
             viewModel: sp.GetRequiredService<PaymentViewModel>()
         ));
@@ -177,5 +205,21 @@ public partial class App : Application
             var productService = sp.GetRequiredService<ProductService>();
             return new MainWindow(navigationService, productService);
         });
+    }
+
+    private void StartMemoryUsageCollection()
+    {
+        var timer = new Timer(_ => 
+        {
+            var process = Process.GetCurrentProcess();
+            AppMetrics.MemoryUsage.Set(process.WorkingSet64 / 1024 / 1024); // MB
+        }, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+    }
+    
+    protected override void OnExit(ExitEventArgs e)
+    {
+        _metricServer?.Stop();
+        _metricServer?.Dispose();
+        base.OnExit(e);
     }
 }

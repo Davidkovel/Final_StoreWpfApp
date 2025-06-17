@@ -1,34 +1,26 @@
 using System.Windows;
 using System.Windows.Controls;
-using CommunityToolkit.Mvvm.Input;
-using Core.Entity;
 using DekstopApp.Services;
 using DekstopApp.ViewModels;
 
 namespace DekstopApp.Views;
 
-public partial class HomePage : UserControl
+public partial class AboutPage : UserControl
 {
     private readonly NavigationService _navigationService;
     private readonly AuthService _authService;
-
-    public HomePage(NavigationService navigationService, HomeViewModel viewModel, AuthService authService)
+    
+    public AboutPage(NavigationService navigationService, AuthService authService)
     {
         InitializeComponent();
-        DataContext = viewModel;
+
         _navigationService = navigationService;
         _authService = authService;
-
+        
         _authService.AuthStateChanged += UpdateAuthButtons;
         UpdateAuthButtons();
-
-        if (viewModel.LoadProductsCommand.CanExecute(null))
-            viewModel.LoadProductsCommand.Execute(null);
-
-        if (viewModel.LoadCategoryCommand.CanExecute(null))
-            viewModel.LoadCategoryCommand.Execute(null);
     }
-
+    
     private void UpdateAuthButtons()
     {
         if (_authService.IsLoggedIn)
@@ -42,7 +34,7 @@ public partial class HomePage : UserControl
             ProfileButton.Visibility = Visibility.Collapsed;
         }
     }
-
+    
     private void OnGoCartPageNavigationClick(object sender, RoutedEventArgs e)
     {
         _navigationService.NavigateTo<CartPage, CartViewModel>();
@@ -52,12 +44,9 @@ public partial class HomePage : UserControl
     {
         _navigationService.NavigateTo<LoginPage, AuthViewModel>();
     }
-
-    private void OnGoAboutUsNavigationClick(object sender, RoutedEventArgs e)
+    
+    private void OnGoHomePageNavigationClick(object sender, RoutedEventArgs e)
     {
-        _navigationService.NavigateTo<AboutPage>();
+        _navigationService.NavigateTo<HomePage, HomeViewModel>();
     }
 }
-
-
-// batison282@cigidea.com 123KK!!!

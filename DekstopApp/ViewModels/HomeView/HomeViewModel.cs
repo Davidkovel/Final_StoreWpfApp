@@ -10,8 +10,10 @@ using CommunityToolkit.Mvvm.Input;
 using Core.Entity;
 using Data.Models;
 using DekstopApp.Services;
+using DekstopApp.Utils;
 using DekstopApp.Views;
 using Microsoft.Extensions.Logging;
+using Prometheus;
 
 namespace DekstopApp.ViewModels;
 
@@ -58,29 +60,32 @@ public partial class HomeViewModel : ObservableObject
 
     private async Task LoadProducts()
     {
-        try
+        using (AppMetrics.LoadProductsDuration.NewTimer())
         {
-            _logger.LogInformation("Loading product...");
-            IEnumerable<ProductModel> loadedProducts;
+            try
+            {
+                _logger.LogInformation("Loading product...");
+                IEnumerable<ProductModel> loadedProducts;
 
-            if (SelectedCategoryId.HasValue)
-            {
-                loadedProducts = await _productService.GetProductsByCategory(SelectedCategoryId.Value);
-            }
-            else
-            {
-                loadedProducts = await _productService.LoadProducts();
-            }
+                if (SelectedCategoryId.HasValue)
+                {
+                    loadedProducts = await _productService.GetProductsByCategory(SelectedCategoryId.Value);
+                }
+                else
+                {
+                    loadedProducts = await _productService.LoadProducts();
+                }
 
-            Products.Clear();
-            foreach (var product in loadedProducts)
-            {
-                Products.Add(product);
+                Products.Clear();
+                foreach (var product in loadedProducts)
+                {
+                    Products.Add(product);
+                }
             }
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, e.Message);
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+            }
         }
     }
 

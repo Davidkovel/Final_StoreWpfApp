@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -11,6 +12,7 @@ using DekstopApp.Common;
 using DekstopApp.Services;
 using DekstopApp.Views;
 using Services;
+using Services.Features.Rating;
 using Supabase.Gotrue;
 
 namespace DekstopApp.ViewModels;
@@ -21,22 +23,53 @@ public partial class DetailViewModel : ObservableObject
     private readonly AuthService _authService;
     private readonly CommentService _commentService;
     private readonly CartService _cartService;
+    private readonly RatingService _ratingService;
     private readonly IDialogService _dialogService;
 
     [ObservableProperty] private ProductModel? _selectedProduct;
     [ObservableProperty] private string _newCommentText = string.Empty;
     [ObservableProperty] private bool _canAddComment = true;
     [ObservableProperty] private IEnumerable<Comment> _comments = new List<Comment>();
+    private int _selectedRating;
+    [ObservableProperty] private int _ratingValue = 0;
+    public List<StarModel> RatingStars { get; }
 
     public DetailViewModel(NavigationService navigationService, CartService cartService, AuthService authService,
-        CommentService commentService, IDialogService dialogService)
+        CommentService commentService, RatingService ratingService, IDialogService dialogService)
     {
         _navigationService = navigationService;
         _cartService = cartService;
         _authService = authService;
         _commentService = commentService;
         _dialogService = dialogService;
+
+        RatingStars = Enumerable.Range(1, 5).Select(i => new StarModel
+        {
+            Value = i,
+            Color = Brushes.Gray
+        }).ToList();
     }
+
+    public int SelectedRating
+    {
+        get => _selectedRating;
+        set
+        {
+            _selectedRating = value;
+            OnPropertyChanged();
+
+            // Обновляем цвет звезд (для кастомного варианта)
+            if (RatingStars != null)
+            {
+                foreach (var star in RatingStars)
+                {
+                    star.Color = star.Value <= value ? Brushes.Gold : Brushes.Gray;
+                }
+            }
+        }
+    }
+
+    // Commands
 
     [RelayCommand]
     private async Task LoadComments()
@@ -83,6 +116,19 @@ public partial class DetailViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task AddRating()
+    {
+        if (!await ValidateUserAuthenticationAsync()) return;
+
+        var currentUser = await GetCurrentUser();
+        if (currentUser is null) return;
+
+        if (await CheckExistingRatingAsync(currentUser)) return;
+
+        await ExecuteAddRatingAsync(currentUser.Id);
+    }
+
+    [RelayCommand]
     private void GoBack()
     {
         _navigationService.NavigateBack();
@@ -121,6 +167,14 @@ public partial class DetailViewModel : ObservableObject
 
     private async Task<bool> CheckExistingCommentsAsync(User user)
     {
+        bool hasServerComment = await _commentService.CheckIfUserHasComment(user.Id, SelectedProduct!.Id);
+        if (hasServerComment)
+        {
+            _dialogService.ShowMessage("You already commented this product before");
+            CanAddComment = false;
+            return true;
+        }
+
         bool hasLocalComment = Comments.Any(c => c.UserId == user.Id);
         if (hasLocalComment)
         {
@@ -129,11 +183,15 @@ public partial class DetailViewModel : ObservableObject
             return true;
         }
 
-        bool hasServerComment = await _commentService.CheckIfUserHasComment(user.Id, SelectedProduct!.Id);
-        if (hasServerComment)
+        return false;
+    }
+
+    private async Task<bool> CheckExistingRatingAsync(User user)
+    {
+        bool hasServerRating = await _commentService.CheckIfUserHasRating(user.Id, SelectedProduct!.Id);
+        if (hasServerRating)
         {
-            _dialogService.ShowMessage("You already commented this product before");
-            CanAddComment = false;
+            _dialogService.ShowMessage("You already rated this product before");
             return true;
         }
 
@@ -163,12 +221,6 @@ public partial class DetailViewModel : ObservableObject
     {
         try
         {
-            if (await _cartService.IsItemInCart(SelectedProduct!.Id, user.Id))
-            {
-                _dialogService.ShowMessage($"{SelectedProduct!.Name} is already in your cart");
-                return;
-            }
-
             await _cartService.AddItemToCart(SelectedProduct!, user.Id, 1);
             WeakReferenceMessenger.Default.Send(new CartUpdatedMessage());
             _dialogService.ShowMessage($"{SelectedProduct!.Name} added to cart");
@@ -178,4 +230,23 @@ public partial class DetailViewModel : ObservableObject
             _dialogService.ShowErrorMessage("Failed to add product to cart" + ex.Message);
         }
     }
+
+    private async Task ExecuteAddRatingAsync(string userId)
+    {
+        var rating = new Rating
+        {
+            ProductId = _selectedProduct.Id,
+            UserId = userId,
+            RatingValue = _ratingValue,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        await _ratingService.AddRatingAsync(rating);
+    }
+}
+
+public class StarModel
+{
+    public int Value { get; set; }
+    public Brush Color { get; set; }
 }
