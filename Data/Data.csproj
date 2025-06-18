@@ -25,7 +25,6 @@
       <Folder Include="Database\Configuration\" />
       <Folder Include="Extensions\" />
       <Folder Include="Infrastructure\Email\" />
-      <Folder Include="Infrastructure\External\" />
       <Folder Include="Migrations\" />
     </ItemGroup>
 

@@ -26,16 +26,9 @@ public class RatingRepositoryImpl : IRatingRepository
         using var connection = await _connectionFactory.CreateConnectionAsync();
         var parameters = new DynamicParameters();
         parameters.Add("ProductId", productId);
-        var b = await connection.QueryAsync<Core.Entity.RatingProduct>(
+        return await connection.QueryAsync<Core.Entity.RatingProduct>(
             _commandProvider.GetRatingsByProductIdAsync(productId),
             parameters);
-
-        Console.WriteLine(b);
-        foreach (var rating in b)
-        {
-            Console.WriteLine($"{rating.Rating} - {rating.UserId}");
-        }
-        return b;
     }
 
     public async Task AddRatingAsync(int selectedRating, int productId, string userId)

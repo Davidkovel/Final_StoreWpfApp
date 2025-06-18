@@ -46,4 +46,22 @@ public class RedisCacheProvider : ICacheProvider
     {
         return _redisDb.KeyExistsAsync(key);
     }
+
+
+    // For workers redis like RabbitMQ, Kafka, etc.
+
+    public async Task EnqueueAsync<T>(string queueName, T item)
+    {
+        string json = JsonSerializer.Serialize(item, _serializerOptions);
+        await _redisDb.ListLeftPushAsync(queueName, json);
+    }
+
+    public async Task<T> DequeueAsync<T>(string queueName)
+    {
+        var json = await _redisDb.ListRightPopAsync(queueName);
+        if (json.IsNullOrEmpty)
+            return default;
+
+        return JsonSerializer.Deserialize<T>(json, _serializerOptions);
+    }
 }

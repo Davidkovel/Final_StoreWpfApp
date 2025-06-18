@@ -2,6 +2,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Core.Repository;
+using Data.Abstractions.NoSqlDatabase;
+using Data.DTOs;
+using Data.Infrastructure.Queue;
 
 namespace Services.Features.Rating;
 
@@ -9,12 +12,16 @@ public class RatingService : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
     private readonly IRatingRepository _ratingRepository;
+    private readonly ICacheProvider _redisProvider;
+
     private double _averageRating;
     private bool _hasUserRated;
 
-    public RatingService(IRatingRepository ratingRepository)
+    public RatingService(IRatingRepository ratingRepository, ICacheProvider redisProvider)
     {
         _ratingRepository = ratingRepository;
+        _redisProvider = redisProvider;
+
         Ratings = new ObservableCollection<int>();
     }
 
@@ -67,10 +74,15 @@ public class RatingService : INotifyPropertyChanged
     }
 
     public async Task AddRatingAsync(int selectedRating, int productId, string userId)
-    {
-        await _ratingRepository.AddRatingAsync(selectedRating, productId, userId);
-        Ratings.Add(selectedRating);
-        CalculateAverageRating();
+    { 
+        var rating = new RatingTask(Rating: selectedRating, ProductId:productId, UserId: userId);
+        
+        Console.WriteLine($"{rating.Rating} - {rating.UserId} - {rating.ProductId}");
+        await _redisProvider.EnqueueAsync("rating-queue", rating);
+        
+        // await _ratingRepository.AddRatingAsync(selectedRating, productId, userId);
+        // Ratings.Add(selectedRating);
+        // CalculateAverageRating();
         HasUserRated = true;
     }
 

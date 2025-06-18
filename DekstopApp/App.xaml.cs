@@ -10,6 +10,7 @@ using Data.DBCommands;
 using Data.DBProvider;
 using Data.DBProvider.SupabaseRemote;
 using Data.Infrastructure.Caching;
+using Data.Infrastructure.Queue;
 using Data.Repository;
 using Data.Repository.Rating;
 using DekstopApp.Mapping;
@@ -22,6 +23,7 @@ using Microsoft.Extensions.Logging;
 using Prometheus;
 using Services;
 using Services.Features.Rating;
+using Services.Features.Rating.Workers;
 
 namespace DekstopApp;
 
@@ -45,7 +47,7 @@ public partial class App : Application
 
         _metricServer = new MetricServer(
             port: 5000
-            );
+        );
         _metricServer.Start();
 
         // C:\Windows\System32>netsh http add urlacl url=http://+:5000/metrics/ user=Все
@@ -54,17 +56,20 @@ public partial class App : Application
         //
         //
         // C:\Windows\System32>
-        
+
 
         string supabaseApiKey = supabaseConnectionStrings[0];
         string supabaseEndpoint = supabaseConnectionStrings[1];
 
         StartMemoryUsageCollection();
-        
+
         var serviceCollection = new ServiceCollection();
         ConfigureServices(serviceCollection, connectionString, redisConnection, supabaseApiKey, supabaseEndpoint);
 
         _serviceProvider = serviceCollection.BuildServiceProvider();
+
+        var ratingWorker = _serviceProvider.GetRequiredService<RatingWorker>();
+        Task.Run(() => ratingWorker.ExecuteAsync(CancellationToken.None));
 
         var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
         mainWindow.Show();
@@ -103,6 +108,8 @@ public partial class App : Application
         serviceLocator.AddSingleton<ICacheProvider>(_ =>
             new RedisCacheProvider(redisConnection));
 
+        // serviceLocator.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
+
         // Repositories
         serviceLocator.AddSingleton<ProductRepository, ProductRepositoryImpl>();
         serviceLocator.AddSingleton<CategoryRepository, CategoryRepositoryImpl>();
@@ -120,6 +127,9 @@ public partial class App : Application
         serviceLocator.AddSingleton<CommentService>();
         serviceLocator.AddSingleton<RatingService>();
         serviceLocator.AddSingleton<IDialogService, DialogService>();
+
+        // Register Background Workers
+        serviceLocator.AddSingleton<RatingWorker>();
 
         // Register ViewModels
         serviceLocator.AddSingleton<HomeViewModel>(sp => new HomeViewModel(
@@ -194,13 +204,13 @@ public partial class App : Application
 
     private void StartMemoryUsageCollection()
     {
-        var timer = new Timer(_ => 
+        var timer = new Timer(_ =>
         {
             var process = Process.GetCurrentProcess();
             AppMetrics.MemoryUsage.Set(process.WorkingSet64 / 1024 / 1024); // MB
         }, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
     }
-    
+
     protected override void OnExit(ExitEventArgs e)
     {
         _metricServer?.Stop();

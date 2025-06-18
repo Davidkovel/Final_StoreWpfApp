@@ -110,7 +110,7 @@
                                        FontSize="14"
                                        Margin="0 0 10 0" />
                             
-                            <TextBlock Text="{Binding AverageRating}" FontSize="14"></TextBlock>
+                            <TextBlock Text="{Binding AverageRating, StringFormat={}{0:N2}}" FontSize="14"></TextBlock>
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>

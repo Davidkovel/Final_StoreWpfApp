@@ -102,7 +102,7 @@ public partial class DetailViewModel : ObservableObject
         var currentUser = await GetCurrentUser();
         if (currentUser is null) return;
 
-        if (await CheckExistingCommentsAsync(currentUser)) return;
+        // if (await CheckExistingCommentsAsync(currentUser)) return;
 
         await SubmitNewCommentAsync(currentUser);
     }
@@ -293,8 +293,7 @@ public partial class DetailViewModel : ObservableObject
     {
         _ratings.Clear();
         await _ratingService.LoadRatingsAsync(SelectedProduct.Id);
-
-        _averageRating = _ratingService.AverageRating;
-        Console.WriteLine(_averageRating);
+        AverageRating = _ratingService.AverageRating;
+        Console.WriteLine($"Loaded rating: {AverageRating}");
     }
 }
