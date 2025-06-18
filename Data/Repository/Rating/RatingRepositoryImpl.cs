@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using System.Transactions;
 using Core.Repository;
 using Dapper;
@@ -20,15 +21,24 @@ public class RatingRepositoryImpl : IRatingRepository
         _commandProvider = commandProvider;
     }
 
-    public async Task<IEnumerable<Core.Entity.Rating>> GetRatingsByProductIdAsync(int productId)
+    public async Task<IEnumerable<Core.Entity.RatingProduct>> GetRatingsByProductIdAsync(int productId)
     {
         using var connection = await _connectionFactory.CreateConnectionAsync();
-        return await connection.QueryAsync<Core.Entity.Rating>(
+        var parameters = new DynamicParameters();
+        parameters.Add("ProductId", productId);
+        var b = await connection.QueryAsync<Core.Entity.RatingProduct>(
             _commandProvider.GetRatingsByProductIdAsync(productId),
-            new { ProductId = productId });
+            parameters);
+
+        Console.WriteLine(b);
+        foreach (var rating in b)
+        {
+            Console.WriteLine($"{rating.Rating} - {rating.UserId}");
+        }
+        return b;
     }
 
-    public async Task AddRatingAsync(Core.Entity.Rating rating)
+    public async Task AddRatingAsync(int selectedRating, int productId, string userId)
     {
         using var scope = new TransactionScope(
             TransactionScopeOption.Required,
@@ -43,24 +53,14 @@ public class RatingRepositoryImpl : IRatingRepository
         {
             using var connection = await _connectionFactory.CreateConnectionAsync();
 
-            // 1. Проверяем, не оценивал ли уже пользователь
-            var hasRated = await connection.ExecuteScalarAsync<bool>(
-                _commandProvider.CheckIfUserHasRatedAsync(rating.UserId, rating.ProductId),
-                new { rating.UserId, rating.ProductId });
-
-            if (hasRated)
-                throw new InvalidOperationException("User has already rated this product");
-
             // 2. Добавляем новый рейтинг
             await connection.ExecuteAsync(
-                _commandProvider.AddRatingAsync(rating),
+                _commandProvider.AddRatingAsync(selectedRating, productId, userId),
                 new
                 {
-                    rating.ProductId,
-                    rating.UserId,
-                    rating.RatingValue,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    Rating = selectedRating,
+                    ProductId = productId,
+                    UserId = userId
                 });
 
             scope.Complete();
@@ -72,10 +72,22 @@ public class RatingRepositoryImpl : IRatingRepository
         }
     }
 
-    public async Task<IEnumerable<Core.Entity.Rating>> GetRatingsByUserIdAsync(string userId, int productId)
+    public async Task<bool> HasUserRatedAsync(string userId, int productId)
     {
         using var connection = await _connectionFactory.CreateConnectionAsync();
-        return await connection.QueryAsync<Core.Entity.Rating>(
+
+        // 1. Проверяем, не оценивал ли уже пользователь
+        var hasRated = await connection.ExecuteScalarAsync<bool>(
+            _commandProvider.CheckIfUserHasRatedAsync(userId, productId),
+            new { UserId = userId, ProductId = productId });
+
+        return hasRated;
+    }
+
+    public async Task<List<int>> GetRatingsByUserIdAsync(string userId, int productId)
+    {
+        using var connection = await _connectionFactory.CreateConnectionAsync();
+        return (List<int>)await connection.QueryAsync(
             _commandProvider.GetRatingsByUserIdAsync(userId, productId),
             new { UserId = userId, ProductId = productId });
     }

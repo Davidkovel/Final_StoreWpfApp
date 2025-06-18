@@ -12,9 +12,9 @@ public class RatingCommandProvider : IRatingSqlCommandProvider
         SELECT * FROM Ratings WHERE UserId = @UserId AND ProductId = @ProductId
         ";
 
-    public string AddRatingAsync(Core.Entity.Rating rating) => @"
-        INSERT INTO Ratings (ProductId, UserId, RatingValue, CreatedAt, UpdatedAt)
-        VALUES (@ProductId, @UserId, @RatingValue, @CreatedAt, @UpdatedAt)
+    public string AddRatingAsync(int selectedRating, int productId, string userId) => @"
+        INSERT INTO Ratings (UserId, ProductId, Rating)
+        VALUES (@UserId, @ProductId, @Rating)
     ";
 
     public string CheckIfUserHasRatedAsync(string userId, int productId) => @"

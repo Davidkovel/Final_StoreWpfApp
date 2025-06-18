@@ -15,10 +15,10 @@ public class RatingService : INotifyPropertyChanged
     public RatingService(IRatingRepository ratingRepository)
     {
         _ratingRepository = ratingRepository;
-        Ratings = new ObservableCollection<Core.Entity.Rating>();
+        Ratings = new ObservableCollection<int>();
     }
 
-    public ObservableCollection<Core.Entity.Rating> Ratings { get; }
+    public ObservableCollection<int>? Ratings { get; }
 
     public double AverageRating
     {
@@ -50,10 +50,11 @@ public class RatingService : INotifyPropertyChanged
     {
         Ratings.Clear();
         var ratings = await _ratingRepository.GetRatingsByProductIdAsync(productId);
-
+        Console.WriteLine(ratings);
         foreach (var rating in ratings)
         {
-            Ratings.Add(rating);
+            Console.WriteLine($"{rating.Rating} - {rating.UserId}");
+            Ratings.Add(rating.Rating ?? 0);
         }
 
         CalculateAverageRating();
@@ -65,29 +66,24 @@ public class RatingService : INotifyPropertyChanged
         HasUserRated = await _ratingRepository.CheckIfUserHasRatedAsync(userId, productId);
     }
 
-    public async Task AddRatingAsync(Core.Entity.Rating rating)
+    public async Task AddRatingAsync(int selectedRating, int productId, string userId)
     {
-        await _ratingRepository.AddRatingAsync(rating);
-        Ratings.Add(rating);
+        await _ratingRepository.AddRatingAsync(selectedRating, productId, userId);
+        Ratings.Add(selectedRating);
         CalculateAverageRating();
         HasUserRated = true;
     }
 
+    public async Task<bool> CheckIfUserHasRatedAsync(string userId, int productId)
+    {
+        return await _ratingRepository.HasUserRatedAsync(userId, productId);
+    }
+
     private void CalculateAverageRating()
     {
-        if (Ratings.Count == 0)
-        {
-            AverageRating = 0;
-            return;
-        }
-
-        double sum = 0;
-        foreach (var rating in Ratings)
-        {
-            sum += rating.RatingValue;
-        }
-
-        AverageRating = sum / Ratings.Count;
+        AverageRating = Ratings.Any()
+            ? Ratings.Average()
+            : 0.0;
     }
 
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)

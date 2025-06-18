@@ -23,6 +23,7 @@ public class DatabaseCommandProvider
                     Name NVARCHAR(100) NOT NULL,
                     Description NVARCHAR(MAX),
                     Price DECIMAL(18,2) NOT NULL,
+                    Rating INT NULL CHECK (Rating BETWEEN 1 AND 5),
                     ImageUrl NVARCHAR(MAX) NULL,
                     CategoryId INT NOT NULL,
                     Quantity INT NOT NULL DEFAULT 0,
@@ -72,7 +73,6 @@ public class DatabaseCommandProvider
                     UserId NVARCHAR(MAX) NOT NULL,
                     ProductId INT NOT NULL,
                     Text NVARCHAR(MAX) NOT NULL,
-                    Rating INT NULL CHECK (Rating BETWEEN 1 AND 5),
                     CreatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
                     UpdatedAt DATETIME2 NULL,
                     FOREIGN KEY (ProductId) REFERENCES Products(Id)
@@ -81,6 +81,21 @@ public class DatabaseCommandProvider
             END
         ";
 
+    public static string CreateRatingsTableIfNotExists() => @"
+            IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Ratings')
+            BEGIN
+                CREATE TABLE Ratings (
+                    Id INT PRIMARY KEY IDENTITY(1,1),
+                    UserId NVARCHAR(MAX) NOT NULL,
+                    ProductId INT NOT NULL,
+                    Rating INT NOT NULL CHECK (Rating BETWEEN 1 AND 5),
+                    CreatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
+                    FOREIGN KEY (ProductId) REFERENCES Products(Id)
+                );
+                PRINT 'Table Ratings created successfully.';
+            END
+        ";
+    
     public static string DropTablesCommand() => @"
         EXEC sp_MSforeachtable 'ALTER TABLE ? NOCHECK CONSTRAINT ALL';
 
