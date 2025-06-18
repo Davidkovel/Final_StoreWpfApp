@@ -30,6 +30,9 @@ public partial class DetailViewPage : UserControl
             {
                 if (viewModel.LoadCommentsCommand.CanExecute(null))
                     viewModel.LoadCommentsCommand.Execute(null);
+
+                if (viewModel.LoadRatingsCommand.CanExecute(null))
+                    viewModel.LoadRatingsCommand.Execute(null);
             }
         };
     }
@@ -38,24 +41,4 @@ public partial class DetailViewPage : UserControl
     {
         _navigationService.NavigateBack();
     }
-
-    //
-    // [RelayCommand]
-    // private void IncreaseQuantity()
-    // {
-    //     Quantity++;
-    // }
-    //
-    // [RelayCommand]
-    // private void DecreaseQuantity()
-    // {
-    //     if (Quantity > 1) Quantity--;
-    // }
-
-    // [RelayCommand]
-    // private async Task AddToCart()
-    // {
-    //     await _cartService.AddToCartAsync(SelectedProduct, Quantity);
-    //     _navigationService.GoBack();
-    // }
 }

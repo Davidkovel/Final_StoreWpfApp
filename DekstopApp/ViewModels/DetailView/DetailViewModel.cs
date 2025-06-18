@@ -30,9 +30,9 @@ public partial class DetailViewModel : ObservableObject
     [ObservableProperty] private string _newCommentText = string.Empty;
     [ObservableProperty] private bool _canAddComment = true;
     [ObservableProperty] private IEnumerable<Comment> _comments = new List<Comment>();
-    private int _selectedRating;
-    [ObservableProperty] private int _ratingValue = 0;
-    public List<StarModel> RatingStars { get; }
+    private int _selectedRating = 1;
+    [ObservableProperty] private double _averageRating;
+    private List<int>_ratings = new List<int>();
 
     public DetailViewModel(NavigationService navigationService, CartService cartService, AuthService authService,
         CommentService commentService, RatingService ratingService, IDialogService dialogService)
@@ -41,13 +41,8 @@ public partial class DetailViewModel : ObservableObject
         _cartService = cartService;
         _authService = authService;
         _commentService = commentService;
+        _ratingService = ratingService;
         _dialogService = dialogService;
-
-        RatingStars = Enumerable.Range(1, 5).Select(i => new StarModel
-        {
-            Value = i,
-            Color = Brushes.Gray
-        }).ToList();
     }
 
     public int SelectedRating
@@ -55,16 +50,10 @@ public partial class DetailViewModel : ObservableObject
         get => _selectedRating;
         set
         {
-            _selectedRating = value;
-            OnPropertyChanged();
-
-            // Обновляем цвет звезд (для кастомного варианта)
-            if (RatingStars != null)
+            if (SetProperty(ref _selectedRating, value))
             {
-                foreach (var star in RatingStars)
-                {
-                    star.Color = star.Value <= value ? Brushes.Gold : Brushes.Gray;
-                }
+                Console.WriteLine($"Selected rating changed to: {value}");
+                // Дополнительная логика при изменении рейтинга
             }
         }
     }
@@ -84,6 +73,22 @@ public partial class DetailViewModel : ObservableObject
         catch (Exception ex)
         {
             string ErrorMessage = "Comments can't load. Try again. " + ex.Message;
+            await _dialogService.ShowErrorMessage(ErrorMessage);
+        }
+    }
+
+    [RelayCommand]
+    private async Task LoadRatings()
+    {
+        try
+        {
+            if (SelectedProduct == null) return;
+            await LoadRatingAsync();
+
+        }
+        catch (Exception ex)
+        {
+            string ErrorMessage = "Ratings can't load. Try again. " + ex.Message;
             await _dialogService.ShowErrorMessage(ErrorMessage);
         }
     }
@@ -124,6 +129,19 @@ public partial class DetailViewModel : ObservableObject
         if (currentUser is null) return;
 
         if (await CheckExistingRatingAsync(currentUser)) return;
+
+        await ExecuteAddRatingAsync(currentUser.Id);
+    }
+
+    [RelayCommand]
+    private async Task SubmitRating()
+    {
+        if (!await ValidateUserAuthenticationAsync()) return;
+
+        var currentUser = await GetCurrentUser();
+        if (currentUser is null) return;
+
+        if (!await CanSubmitRatingAsync(currentUser)) return;
 
         await ExecuteAddRatingAsync(currentUser.Id);
     }
@@ -195,7 +213,38 @@ public partial class DetailViewModel : ObservableObject
             return true;
         }
 
+        if (SelectedRating == 0)
+        {
+            _dialogService.ShowMessage("Please select a rating!");
+            return false;
+        }
+
         return false;
+    }
+
+    private async Task<bool> CanSubmitRatingAsync(User user)
+    {
+        if (SelectedProduct == null)
+        {
+            _dialogService.ShowMessage("No product selected!");
+            return false;
+        }
+        
+        bool canSubmit = await _commentService.CheckIfUserHasRating(user.Id, SelectedProduct.Id);
+        Console.WriteLine(canSubmit);
+        if (canSubmit)
+        {
+            _dialogService.ShowMessage("You already rated this product before");
+            return false;
+        }
+
+        if (SelectedRating < 1 || SelectedRating > 5)
+        {
+            _dialogService.ShowMessage("Please select a valid rating (1-5 stars)");
+            return false;
+        }
+
+        return true;
     }
 
     private async Task SubmitNewCommentAsync(User user)
@@ -233,20 +282,19 @@ public partial class DetailViewModel : ObservableObject
 
     private async Task ExecuteAddRatingAsync(string userId)
     {
-        var rating = new Rating
-        {
-            ProductId = _selectedProduct.Id,
-            UserId = userId,
-            RatingValue = _ratingValue,
-            CreatedAt = DateTime.UtcNow
-        };
+        await _ratingService.AddRatingAsync(selectedRating: _selectedRating, productId: SelectedProduct.Id,
+            userId: userId);
 
-        await _ratingService.AddRatingAsync(rating);
+        _dialogService.ShowMessage("Thank you for your rating!");
+        SelectedRating = 1;
     }
-}
 
-public class StarModel
-{
-    public int Value { get; set; }
-    public Brush Color { get; set; }
+    private async Task LoadRatingAsync()
+    {
+        _ratings.Clear();
+        await _ratingService.LoadRatingsAsync(SelectedProduct.Id);
+
+        _averageRating = _ratingService.AverageRating;
+        Console.WriteLine(_averageRating);
+    }
 }

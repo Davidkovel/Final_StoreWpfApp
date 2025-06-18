@@ -35,8 +35,7 @@ public class CommentService(CommentRepository commentRepository, IRatingReposito
     {
         try
         {
-            var comments = await commentRepository.GetCommentByUserIdAsync(userId, productId);
-            return comments?.Any() ?? false;
+            return await ratingRepository.CheckIfUserHasRatedAsync(userId, productId);
         }
         catch
         {

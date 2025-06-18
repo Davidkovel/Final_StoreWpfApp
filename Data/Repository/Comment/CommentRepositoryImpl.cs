@@ -44,7 +44,6 @@ public class CommentRepositoryImpl : CommentRepository
         parameters.Add("UserId", comment.UserId);
         parameters.Add("Text", comment.Text);
         parameters.Add("ProductId", comment.ProductId);
-        parameters.Add("Rating", comment.Rating);
         await connection.ExecuteAsync(_commentCommandProvider.AddComment(), parameters);
     }
 }
