@@ -188,7 +188,7 @@
                                 Padding="15 5"
                                 Background="#FFD700"
                                 FontWeight="Bold"
-                                Command="{Binding CheckoutCommand}" />
+                                Click="OnGoPaymenyNavigationClick"/>
 
                         <Button Content="Очистить корзину"
                                 Margin="0 10 0 0"

@@ -38,7 +38,16 @@ public class CartCommandProvider : ICartSqlCommandProvider
     public string AddItemToCart() => @"
         INSERT INTO Cart (ProductId, UserId, Quantity)
         VALUES (@ProductId, @UserId, @Quantity);";
-    
+
+    public string IsItemInCart()
+    {
+        return @"
+            SELECT COUNT(*)
+            FROM Cart
+            WHERE ProductId = @ProductId AND UserId = @UserId;
+            ";
+    }
+
     public string DeleteItemFromCart() => @"
         DELETE FROM Cart
         WHERE ProductId = @ProductId;";

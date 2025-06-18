@@ -16,11 +16,14 @@ using DekstopApp.Mapping;
 using DekstopApp.Services;
 using DekstopApp.Utils;
 using DekstopApp.ViewModels;
+using DekstopApp.ViewModels.Payment;
 using DekstopApp.Views;
+using DekstopApp.Views.Payment;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Prometheus;
 using Services;
+using Services.Features.Payment;
 using Services.Features.Rating;
 
 namespace DekstopApp;
@@ -119,6 +122,7 @@ public partial class App : Application
         serviceLocator.AddSingleton<AuthService>();
         serviceLocator.AddSingleton<CommentService>();
         serviceLocator.AddSingleton<RatingService>();
+        serviceLocator.AddSingleton<MonobankService>();
         serviceLocator.AddSingleton<IDialogService, DialogService>();
 
         // Register ViewModels
@@ -150,6 +154,13 @@ public partial class App : Application
             authService: sp.GetRequiredService<AuthService>()
         ));
 
+        serviceLocator.AddSingleton<PaymentViewModel>(sp => new PaymentViewModel(
+            cartService: sp.GetRequiredService<CartService>(),
+            authService: sp.GetRequiredService<AuthService>(),
+            monobankService: sp.GetRequiredService<MonobankService>(),
+            dialogService: sp.GetRequiredService<IDialogService>()
+        ));
+        
         // Register Views
         serviceLocator.AddSingleton<HomePage>(sp => new HomePage(
             navigationService: sp.GetRequiredService<NavigationService>(),
@@ -181,6 +192,10 @@ public partial class App : Application
         serviceLocator.AddSingleton<AboutPage>(sp => new AboutPage(
             navigationService: sp.GetRequiredKeyedService<NavigationService>(null),
             authService: sp.GetRequiredService<AuthService>()
+        ));
+        
+        serviceLocator.AddSingleton<PaymentWindow>(sp => new PaymentWindow(
+            viewModel: sp.GetRequiredService<PaymentViewModel>()
         ));
 
         // Register MainWindow
