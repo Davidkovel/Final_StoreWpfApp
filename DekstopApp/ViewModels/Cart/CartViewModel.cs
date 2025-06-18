@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Core.Entity;
 using DekstopApp.Common;
 using DekstopApp.Services;
+using DekstopApp.ViewModels.Payment;
+using DekstopApp.Views.Payment;
 using Microsoft.Extensions.Logging;
 
 namespace DekstopApp.ViewModels;
@@ -70,6 +73,15 @@ public partial class CartViewModel : ObservableObject, IRecipient<CartUpdatedMes
             throw;
         }
     }
+
+    [RelayCommand]
+    private void Checkout()
+    {
+        ;
+        // var paymentWindow = new PaymentWindow();
+        // paymentWindow.ShowDialog(); // или Show(), если не модально
+    }
+
 
     private async Task ClearCartItemsAsync()
     {

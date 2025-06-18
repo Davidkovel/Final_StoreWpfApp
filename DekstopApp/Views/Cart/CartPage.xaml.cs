@@ -2,6 +2,8 @@ using System.Windows;
 using System.Windows.Controls;
 using DekstopApp.Services;
 using DekstopApp.ViewModels;
+using DekstopApp.ViewModels.Payment;
+using DekstopApp.Views.Payment;
 
 namespace DekstopApp.Views;
 
@@ -29,5 +31,10 @@ public partial class CartPage : UserControl
     private void OnGoAboutUsNavigationClick(object sender, RoutedEventArgs e)
     {
         _navigationService.NavigateTo<AboutPage>();
+    }
+
+    private void OnGoPaymenyNavigationClick(object sender, RoutedEventArgs e)
+    {
+        _navigationService.NavigateToWindow<PaymentWindow, PaymentViewModel>();
     }
 }
