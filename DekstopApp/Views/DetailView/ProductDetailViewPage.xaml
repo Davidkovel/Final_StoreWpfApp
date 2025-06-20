@@ -8,176 +8,178 @@
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="800">
 
-    <Grid Background="#F5F5F5">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />  <!-- Back Button -->
-            <RowDefinition Height="*" />     <!-- Product Details -->
-            <RowDefinition Height="Auto" />  <!-- Rating Input -->
-            <RowDefinition Height="Auto" />  <!-- Comment Input -->
-            <RowDefinition Height="Auto" />  <!-- Add Comment Button -->
-            <RowDefinition Height="*" />     <!-- Comments List -->
-            <RowDefinition Height="Auto" />  <!-- Add to Cart Button -->
+    <ScrollViewer>
+        <Grid Background="#F5F5F5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />  <!-- Back Button -->
+                <RowDefinition Height="*" />     <!-- Product Details -->
+                <RowDefinition Height="Auto" />  <!-- Rating Input -->
+                <RowDefinition Height="Auto" />  <!-- Comment Input -->
+                <RowDefinition Height="Auto" />  <!-- Add Comment Button -->
+                <RowDefinition Height="*" />     <!-- Comments List -->
+                <RowDefinition Height="Auto" />  <!-- Add to Cart Button -->
 
-        </Grid.RowDefinitions>
+            </Grid.RowDefinitions>
 
-        <!-- Back Button -->
-        <Button Grid.Row="0"
-                Content="← Назад"
-                HorizontalAlignment="Left"
-                Background="Black"
-                Foreground="White"
-                Margin="10"
-                Click="OnGoBackNavigationClick" />
+            <!-- Back Button -->
+            <Button Grid.Row="0"
+                    Content="← Назад"
+                    HorizontalAlignment="Left"
+                    Background="Black"
+                    Foreground="White"
+                    Margin="10"
+                    Click="OnGoBackNavigationClick" />
 
-        <!-- Product Detail Content -->
-        <ScrollViewer Grid.Row="1" Padding="20">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+            <!-- Product Detail Content -->
+            <ScrollViewer Grid.Row="1" Padding="20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-                <!-- Product Image -->
-                <Border Grid.Column="0"
-                        Background="White"
-                        Margin="10"
-                        CornerRadius="5"
-                        BorderBrush="#DDD"
-                        BorderThickness="1">
-                    <Image Source="{Binding SelectedProduct.ImageUrl}"
-                           Stretch="Uniform" />
-                </Border>
+                    <!-- Product Image -->
+                    <Border Grid.Column="0"
+                            Background="White"
+                            Margin="10"
+                            CornerRadius="5"
+                            BorderBrush="#DDD"
+                            BorderThickness="1">
+                        <Image Source="{Binding SelectedProduct.ImageUrl}"
+                               Stretch="Uniform" />
+                    </Border>
 
-                <!-- Product Info -->
-                <StackPanel Grid.Column="1" Margin="20">
-                    <TextBlock Text="{Binding SelectedProduct.Name}"
-                               FontSize="24"
-                               FontWeight="Bold"
-                               Margin="0 0 0 10" />
-
-                    <TextBlock Text="{Binding SelectedProduct.Price}"
-                               FontSize="20"
-                               Foreground="#222265"
-                               Margin="0 0 0 20" />
-
-                    <TextBlock Text="{Binding SelectedProduct.Description}"
-                               TextWrapping="Wrap"
-                               FontSize="16"
-                               Margin="0 0 0 30" />
-
-                    <!-- Quantity Selector -->
-                    <StackPanel Orientation="Horizontal" Margin="0 20 0 0">
-                        <TextBlock Text="Количество: "
-                                   VerticalAlignment="Center"
-                                   FontSize="14"
-                                   Margin="0 0 10 0" />
-                        <TextBlock Text="{Binding SelectedProduct.Quantity}"
-                                   VerticalAlignment="Center"
+                    <!-- Product Info -->
+                    <StackPanel Grid.Column="1" Margin="20">
+                        <TextBlock Text="{Binding SelectedProduct.Name}"
+                                   FontSize="24"
                                    FontWeight="Bold"
-                                   FontSize="14"
-                                   Margin="0 0 10 0" />
-                    </StackPanel>
+                                   Margin="0 0 0 10" />
 
-                    <!-- In development -->
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Выберите размер:"
-                                   FontSize="14"
-                                   Margin="0 0 10 0" />
-                        <ComboBox ItemsSource="{Binding SelectedProduct.Sizes}"
-                                  SelectedItem="{Binding SelectedProduct.SelectedSize}"
-                                  Width="200"
-                                  Margin="0 0 0 20" />
+                        <TextBlock Text="{Binding SelectedProduct.Price}"
+                                   FontSize="20"
+                                   Foreground="#222265"
+                                   Margin="0 0 0 20" />
 
-                        <TextBlock Text="Выберите цвет:"
-                                   FontSize="14"
-                                   Margin="0 0 10 0" />
-                        <ComboBox ItemsSource="{Binding SelectedProduct.Colors}"
-                                  SelectedItem="{Binding SelectedProduct.SelectedColor}"
-                                  Width="200" />
-                    </StackPanel>
-
-                    <StackPanel Orientation="Vertical" Margin="10">
-                        <!-- Отзыв -->
-                        <TextBlock Text="Отличный товар, качество супер!"
-                                   FontSize="14"
+                        <TextBlock Text="{Binding SelectedProduct.Description}"
                                    TextWrapping="Wrap"
-                                   Margin="0,0,0,5" />
+                                   FontSize="16"
+                                   Margin="0 0 0 30" />
 
-                        <!-- Рейтинг (звёзды) -->
-                        <StackPanel Orientation="Horizontal">
-                            <!-- Звезды -->
-                            <TextBlock Text="Оценка товара:"
+                        <!-- Quantity Selector -->
+                        <StackPanel Orientation="Horizontal" Margin="0 20 0 0">
+                            <TextBlock Text="Количество товара: "
+                                       VerticalAlignment="Center"
                                        FontSize="14"
                                        Margin="0 0 10 0" />
-                            
-                            <TextBlock Text="{Binding AverageRating, StringFormat={}{0:N2}}" FontSize="14"></TextBlock>
+                            <TextBlock Text="{Binding SelectedProduct.Quantity}"
+                                       VerticalAlignment="Center"
+                                       FontWeight="Bold"
+                                       FontSize="14"
+                                       Margin="0 0 10 0" />
+                        </StackPanel>
+
+                        <!-- In development -->
+                        <!-- <StackPanel Orientation="Horizontal"> -->
+                        <!--     ~1~ <TextBlock Text="Выберите размер:" @1@ -->
+                        <!--     ~1~            FontSize="14" @1@ -->
+                        <!--     ~1~            Margin="0 0 10 0" /> @1@ -->
+                        <!--     ~1~ <ComboBox ItemsSource="{Binding SelectedProduct.Sizes}" @1@ -->
+                        <!--     ~1~           SelectedItem="{Binding SelectedProduct.SelectedSize}" @1@ -->
+                        <!--     ~1~           Width="200" @1@ -->
+                        <!--     ~1~           Margin="0 0 0 20" /> @1@ -->
+                        <!--     ~1~ @1@ -->
+                        <!--     ~1~ <TextBlock Text="Выберите цвет:" @1@ -->
+                        <!--     ~1~            FontSize="14" @1@ -->
+                        <!--     ~1~            Margin="0 0 10 0" /> @1@ -->
+                        <!--     ~1~ <ComboBox ItemsSource="{Binding SelectedProduct.Colors}" @1@ -->
+                        <!--     ~1~           SelectedItem="{Binding SelectedProduct.SelectedColor}" @1@ -->
+                        <!--     ~1~           Width="200" /> @1@ -->
+                        <!-- </StackPanel> -->
+
+                        <StackPanel Orientation="Vertical" Margin="10">
+                            <!-- Отзыв -->
+                            <TextBlock Text="Отличный товар, качество супер!"
+                                       FontSize="14"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,0,5" />
+
+                            <!-- Рейтинг (звёзды) -->
+                            <StackPanel Orientation="Horizontal">
+                                <!-- Звезды -->
+                                <TextBlock Text="Оценка товара:"
+                                           FontSize="14"
+                                           Margin="0 0 10 0" />
+                                
+                                <TextBlock Text="{Binding AverageRating, StringFormat={}{0:N2}}" FontSize="14"></TextBlock>
+                            </StackPanel>
                         </StackPanel>
                     </StackPanel>
-                </StackPanel>
-            </Grid>
-        </ScrollViewer>
+                </Grid>
+            </ScrollViewer>
 
-        <!-- Rating Input -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center">
-            <!-- Текст (опционально) -->
-            <TextBlock Text="Rating: " VerticalAlignment="Center" Margin="14,0,5,0" />
+            <!-- Rating Input -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center">
+                <!-- Текст (опционально) -->
+                <TextBlock Text="Rating: " VerticalAlignment="Center" Margin="14,0,5,0" />
 
-            <!-- Контрол рейтинга -->
-            <materialDesign:RatingBar
-                Value="{Binding SelectedRating, Mode=TwoWay}"
-                Max="5"
-                Foreground="Gold"
-                Margin="14" />
+                <!-- Контрол рейтинга -->
+                <materialDesign:RatingBar
+                    Value="{Binding SelectedRating, Mode=TwoWay}"
+                    Max="5"
+                    Foreground="Gold"
+                    Margin="14" />
 
-            <Button Command="{Binding SubmitRatingCommand}"
-                    Content="Submit Rating"
-                    HorizontalAlignment="Left"
-                    Margin="20,10"
-                    Padding="25,5"
-                    Style="{StaticResource MaterialDesignRaisedButton}" />
-        </StackPanel>
+                <Button Command="{Binding SubmitRatingCommand}"
+                        Content="Submit Rating"
+                        HorizontalAlignment="Left"
+                        Margin="20,10"
+                        Padding="25,5"
+                        Style="{StaticResource MaterialDesignRaisedButton}" />
+            </StackPanel>
 
-        <TextBox Grid.Row="3" Text="{Binding NewCommentText}" />
+            <TextBox Grid.Row="3" Text="{Binding NewCommentText}" />
 
-        <Button Grid.Row="4" Command="{Binding AddCommentCommand}"
-                CommandParameter="{Binding NewCommentText}"
-                Content="Add Comment" />
+            <Button Grid.Row="4" Command="{Binding AddCommentCommand}"
+                    CommandParameter="{Binding NewCommentText}"
+                    Content="Add Comment" />
 
 
-        <ScrollViewer Grid.Row="5"
-                      VerticalScrollBarVisibility="Auto"
-                      Margin="0 40 0 0">
-            <ItemsControl ItemsSource="{Binding Comments}"
-                          Margin="20 0">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderBrush="LightGray"
-                                BorderThickness="0 0 0 1"
-                                Padding="0 5"
-                                Margin="0 5">
-                            <StackPanel>
-                                <TextBlock Text="{Binding Text}"
-                                           TextWrapping="Wrap"
-                                           FontSize="14" />
-                                <TextBlock Text="{Binding CreatedAt, StringFormat='Добавлено: {0:dd.MM.yyyy HH:mm}'}"
-                                           FontSize="12"
-                                           Foreground="Gray" />
-                            </StackPanel>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+            <ScrollViewer Grid.Row="5"
+                          VerticalScrollBarVisibility="Auto"
+                          Margin="0 40 0 0">
+                <ItemsControl ItemsSource="{Binding Comments}"
+                              Margin="20 0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="LightGray"
+                                    BorderThickness="0 0 0 1"
+                                    Padding="0 5"
+                                    Margin="0 5">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Text}"
+                                               TextWrapping="Wrap"
+                                               FontSize="14" />
+                                    <TextBlock Text="{Binding CreatedAt, StringFormat='Добавлено: {0:dd.MM.yyyy HH:mm}'}"
+                                               FontSize="12"
+                                               Foreground="Gray" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
 
-        <!-- Add to Cart Button -->
-        <Button Grid.Row="6"
-                Content="Добавить в корзину"
-                HorizontalAlignment="Stretch"
-                Margin="20"
-                Padding="15 5"
-                Background="Black"
-                Foreground="White"
-                FontSize="16"
-                Command="{Binding AddToCartCommand}" />
-    </Grid>
+            <!-- Add to Cart Button -->
+            <Button Grid.Row="6"
+                    Content="Добавить в корзину"
+                    HorizontalAlignment="Stretch"
+                    Margin="20"
+                    Padding="15 5"
+                    Background="Black"
+                    Foreground="White"
+                    FontSize="16"
+                    Command="{Binding AddToCartCommand}" />
+        </Grid>
+    </ScrollViewer>
 </UserControl>

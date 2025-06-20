@@ -24,7 +24,7 @@
 
                 <!-- Logo -->
                 <TextBlock Grid.Column="0"
-                           Text="MyShop"
+                           Text="88 Shop"
                            Foreground="Black"
                            FontSize="20"
                            FontWeight="Bold"
@@ -114,7 +114,7 @@
                 <!-- TextBlock по центру -->
                 <TextBlock
                     Grid.Column="1"
-                    Text="PRODUCT LIST VIEW"
+                    Text="Products List"
                     Foreground="#FFD700"
                     FontSize="18"
                     FontWeight="Bold"

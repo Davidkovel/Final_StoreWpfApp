@@ -23,7 +23,7 @@
 
                 <!-- Logo -->
                 <TextBlock Grid.Column="0"
-                           Text="MyShop"
+                           Text="88 Shop"
                            Foreground="Black"
                            FontSize="20"
                            FontWeight="Bold"
@@ -110,15 +110,15 @@
                 </Menu>
 
 
-                <!-- TextBlock по центру -->
-                <TextBlock
-                    Grid.Column="1"
-                    Text="PRODUCT LIST VIEW"
-                    Foreground="#FFD700"
-                    FontSize="18"
-                    FontWeight="Bold"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center" />
+                <!-- ~1~ TextBlock по центру @1@ -->
+                <!-- <TextBlock -->
+                <!--     Grid.Column="1" -->
+                <!--     Text="PRODUCT LIST VIEW" -->
+                <!--     Foreground="#FFD700" -->
+                <!--     FontSize="18" -->
+                <!--     FontWeight="Bold" -->
+                <!--     HorizontalAlignment="Center" -->
+                <!--     VerticalAlignment="Center" /> -->
             </Grid>
         </Border>
 
@@ -133,26 +133,26 @@
                        TextAlignment="Center"
                        MaxWidth="600"
                        Margin="0,0,0,20">
-                <Run Text="Добро пожаловать в наш магазин!" FontWeight="Bold" />
+                <Run Text="Ласкаво просимо в наш магазин!" FontWeight="Bold" />
                 <LineBreak />
-                <Run Text="Мы предлагаем качественные товары по доступным ценам." />
+                <Run Text="Ми пропонуємо якісні товари за доступними цінами." />
                 <LineBreak />
-                <Run Text="Работаем с 2010 года и дорожим каждым клиентом." />
+                <Run Text="Працюємо з 2010 року і дорожимо кожним клієнтом." />
                 <LineBreak />
                 <LineBreak />
-                <Run Text="График работы: Пн-Пт — 9:00-20:00, Сб-Вс — 10:00-18:00" FontStyle="Italic" />
+                <Run Text="Графік роботи: Пн-Пт - 9:00-20:00, Сб-Вс - 10:00-18:00" FontStyle="Italic" />
             </TextBlock>
 
             <!-- Контактные данные (телефон + почта) -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
-                <TextBlock Text="📞 Контактный телефон: "
+                <TextBlock Text="📞 Контактний телефон: "
                            FontSize="16"
                            FontWeight="Bold" />
                 <TextBlock Text=" +351 925412364"
                            FontSize="16"
                            Foreground="Blue" />
                 <Separator Width="20" Background="Transparent" />
-                <TextBlock Text="✉ Почта: "
+                <TextBlock Text="✉ Пошта: "
                            FontSize="16"
                            FontWeight="Bold" />
                 <TextBlock Foreground="Blue">
